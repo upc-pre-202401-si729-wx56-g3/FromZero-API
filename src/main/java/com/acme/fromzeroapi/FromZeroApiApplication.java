@@ -1,13 +1,13 @@
-package com.acme.webmasterapi;
+package com.acme.fromzeroapi;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class WebMasterApiApplication {
+public class FromZeroApiApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(WebMasterApiApplication.class, args);
+		SpringApplication.run(FromZeroApiApplication.class, args);
 	}
 
 }
