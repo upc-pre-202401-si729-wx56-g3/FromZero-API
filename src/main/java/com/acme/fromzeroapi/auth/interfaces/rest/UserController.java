@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/v1/api/users")
 @Tag(name = "Users", description = "Operations related to users")
 public class UserController {
     private final UserCommandService userCommandService;
