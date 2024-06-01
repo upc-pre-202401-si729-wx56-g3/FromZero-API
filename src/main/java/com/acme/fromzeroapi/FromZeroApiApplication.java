@@ -1,7 +1,7 @@
 package com.acme.fromzeroapi;
 
-import com.acme.fromzeroapi.enterprise.domain.model.aggregates.Enterprise;
-import com.acme.fromzeroapi.enterprise.infrastructure.persistence.jpa.repositories.EnterpriseRepository;
+import com.acme.fromzeroapi.enterprise_branch_projects.domain.model.aggregates.Enterprise;
+import com.acme.fromzeroapi.enterprise_branch_projects.infrastructure.persistence.jpa.repositories.EnterpriseRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

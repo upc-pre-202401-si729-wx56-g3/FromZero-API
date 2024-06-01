@@ -1,4 +1,4 @@
-package com.acme.fromzeroapi.enterprise.domain.model.aggregates;
+package com.acme.fromzeroapi.enterprise_branch_projects.domain.model.aggregates;
 
 import jakarta.persistence.*;
 import lombok.Getter;

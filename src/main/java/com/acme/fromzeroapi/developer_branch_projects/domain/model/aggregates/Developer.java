@@ -1,4 +1,4 @@
-package com.acme.fromzeroapi.developer.domain.model.aggregates;
+package com.acme.fromzeroapi.developer_branch_projects.domain.model.aggregates;
 
 import com.acme.fromzeroapi.projects.domain.model.aggregates.Project;
 import com.fasterxml.jackson.annotation.JsonBackReference;

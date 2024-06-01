@@ -1,6 +1,6 @@
 package com.acme.fromzeroapi.projects.interfaces.rest;
 
-import com.acme.fromzeroapi.enterprise.interfaces.acl.EnterpriseContextFacade;
+import com.acme.fromzeroapi.enterprise_branch_projects.interfaces.acl.EnterpriseContextFacade;
 import com.acme.fromzeroapi.projects.domain.model.commands.CreateProjectCommand;
 import com.acme.fromzeroapi.projects.domain.model.queries.GetAllProjectsByStateQuery;
 import com.acme.fromzeroapi.projects.domain.model.queries.GetAllProjectsQuery;
