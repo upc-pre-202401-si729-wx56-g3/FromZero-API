@@ -1,9 +1,12 @@
-package com.acme.fromzeroapi.projects.domain.model.aggregates;
+package com.acme.fromzeroapi.developer.domain.model.aggregates;
 
+import com.acme.fromzeroapi.projects.domain.model.aggregates.Project;
 import jakarta.persistence.*;
+import lombok.Getter;
 
 import java.util.List;
 
+@Getter
 @Entity
 public class Developer {
 
@@ -13,5 +16,6 @@ public class Developer {
     private String name;
     @ManyToMany(mappedBy = "candidates")
     private List<Project> projects;
-
+    public Developer(String name){this.name = name;}
+    public Developer(){}
 }

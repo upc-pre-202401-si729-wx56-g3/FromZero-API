@@ -1,7 +1,9 @@
-package com.acme.fromzeroapi.projects.domain.model.aggregates;
+package com.acme.fromzeroapi.enterprise.domain.model.aggregates;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 
+@Getter
 @Entity
 public class Enterprise {
 
@@ -10,6 +12,8 @@ public class Enterprise {
     private Long id;
     private String name;
 
+    public Enterprise(String name) {this.name = name;}
+    public Enterprise(){}
     /*@OneToMany(mappedBy = "enterprise")
     private Project project;*/
 
