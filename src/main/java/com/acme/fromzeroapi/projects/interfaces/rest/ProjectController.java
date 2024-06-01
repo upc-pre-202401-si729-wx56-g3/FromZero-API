@@ -4,6 +4,7 @@ import com.acme.fromzeroapi.enterprise_branch_projects.interfaces.acl.Enterprise
 import com.acme.fromzeroapi.projects.domain.model.commands.CreateProjectCommand;
 import com.acme.fromzeroapi.projects.domain.model.queries.GetAllProjectsByStateQuery;
 import com.acme.fromzeroapi.projects.domain.model.queries.GetAllProjectsQuery;
+import com.acme.fromzeroapi.projects.domain.model.queries.GetProjectByIdQuery;
 import com.acme.fromzeroapi.projects.domain.services.ProjectCommandService;
 import com.acme.fromzeroapi.projects.domain.services.ProjectQueryService;
 import com.acme.fromzeroapi.projects.interfaces.rest.resources.CreateProjectResource;
@@ -73,6 +74,15 @@ public class ProjectController {
         }catch (IllegalArgumentException e){
             return ResponseEntity.badRequest().build();
         }
+    }
 
+    @Operation(summary = "Get Project By Id")
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<ProjectResource> getProjectById(@PathVariable Long id){
+        var getProjectByIdQuery = new GetProjectByIdQuery(id);
+        var project = this.projectQueryService.handle(getProjectByIdQuery);
+        if(project.isEmpty())return  ResponseEntity.badRequest().build();
+        var projectResource = ProjectResourceFromEntityAssembler.toResourceFromEntity(project.get());
+        return ResponseEntity.ok(projectResource);
     }
 }

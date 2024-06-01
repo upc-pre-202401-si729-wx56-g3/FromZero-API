@@ -3,11 +3,13 @@ package com.acme.fromzeroapi.projects.interfaces.acl;
 import com.acme.fromzeroapi.projects.domain.model.aggregates.Project;
 import com.acme.fromzeroapi.projects.domain.model.queries.GetAllProjectsByStateQuery;
 import com.acme.fromzeroapi.projects.domain.model.queries.GetAllProjectsQuery;
+import com.acme.fromzeroapi.projects.domain.model.queries.GetProjectByIdQuery;
 import com.acme.fromzeroapi.projects.domain.services.ProjectQueryService;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProjectContextFacade {
@@ -35,5 +37,11 @@ public class ProjectContextFacade {
         }catch (IllegalArgumentException e){
             return Collections.emptyList();
         }
+    }
+
+    public Project getProjectById(Long id){
+        var getProjectByIdQuery = new GetProjectByIdQuery(id);
+        var project = this.projectQueryService.handle(getProjectByIdQuery);
+        return project.orElse(null);
     }
 }

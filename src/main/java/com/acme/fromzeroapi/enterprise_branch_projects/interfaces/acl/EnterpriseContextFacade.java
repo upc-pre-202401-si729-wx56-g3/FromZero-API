@@ -16,7 +16,5 @@ public class EnterpriseContextFacade {
         var getEnterpriseByIdQuery = new GetEnterpriseByIdQuery(id);
         var enterprise = this.enterpriseQueryService.handle(getEnterpriseByIdQuery);
         return enterprise.orElse(null);
-        /*if(enterprise.isEmpty())return null;
-        return enterprise.get();*/
     }
 }
