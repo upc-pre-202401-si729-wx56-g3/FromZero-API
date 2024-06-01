@@ -1,4 +1,4 @@
-package com.acme.fromzeroapi.auth.application.internal.commandservices;
+package com.acme.fromzeroapi.auth.application.internal.queryservices;
 
 import com.acme.fromzeroapi.auth.domain.model.aggregates.User;
 import com.acme.fromzeroapi.auth.domain.model.queries.GetAllUsersQuery;
