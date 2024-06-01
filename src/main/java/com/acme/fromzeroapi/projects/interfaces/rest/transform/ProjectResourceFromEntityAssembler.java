@@ -15,9 +15,10 @@ public class ProjectResourceFromEntityAssembler {
                     entity.getState(), entity.getProgress(),entity.getEnterprise().getId(),entity.getCandidates());
         }
 
-
+        //if ()
         return new ProjectResource(entity.getId(),entity.getName(),entity.getDescription(),
                 entity.getState(), entity.getProgress(),entity.getEnterprise().getId(),
                 entity.getDeveloper().getId(),entity.getCandidates());
+        // si no conincide con algun estado, throw error
     }
 }

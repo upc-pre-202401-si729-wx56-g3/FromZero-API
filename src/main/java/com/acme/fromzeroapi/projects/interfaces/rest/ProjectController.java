@@ -2,6 +2,7 @@ package com.acme.fromzeroapi.projects.interfaces.rest;
 
 import com.acme.fromzeroapi.enterprise.interfaces.acl.EnterpriseContextFacade;
 import com.acme.fromzeroapi.projects.domain.model.commands.CreateProjectCommand;
+import com.acme.fromzeroapi.projects.domain.model.queries.GetAllProjectsByStateQuery;
 import com.acme.fromzeroapi.projects.domain.model.queries.GetAllProjectsQuery;
 import com.acme.fromzeroapi.projects.domain.services.ProjectCommandService;
 import com.acme.fromzeroapi.projects.domain.services.ProjectQueryService;
@@ -57,5 +58,21 @@ public class ProjectController {
                 .map(ProjectResourceFromEntityAssembler::toResourceFromEntity)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(projectsResources);
+    }
+
+    @Operation(summary = "Get All Project By State")
+    @GetMapping(value = "/by-state")
+    public ResponseEntity<List<ProjectResource>> getAllProjectsByState(@RequestParam String state){
+        try {
+            var getAllProjectsByStateQuery = new GetAllProjectsByStateQuery(state);
+            var projects = this.projectQueryService.handle(getAllProjectsByStateQuery);
+            var projectsResources = projects.stream()
+                    .map(ProjectResourceFromEntityAssembler::toResourceFromEntity)
+                    .collect(Collectors.toList());
+            return ResponseEntity.ok(projectsResources);
+        }catch (IllegalArgumentException e){
+            return ResponseEntity.badRequest().build();
+        }
+
     }
 }

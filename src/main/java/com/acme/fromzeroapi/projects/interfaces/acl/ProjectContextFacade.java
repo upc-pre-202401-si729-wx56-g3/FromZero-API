@@ -1,10 +1,12 @@
 package com.acme.fromzeroapi.projects.interfaces.acl;
 
 import com.acme.fromzeroapi.projects.domain.model.aggregates.Project;
+import com.acme.fromzeroapi.projects.domain.model.queries.GetAllProjectsByStateQuery;
 import com.acme.fromzeroapi.projects.domain.model.queries.GetAllProjectsQuery;
 import com.acme.fromzeroapi.projects.domain.services.ProjectQueryService;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -24,5 +26,14 @@ public class ProjectContextFacade {
     public List<Project> getAllProjects(){
         var getAllProjectsQuery = new GetAllProjectsQuery();
         return this.projectQueryService.handle(getAllProjectsQuery);
+    }
+
+    public List<Project> getAllProjectsByState(String state){
+        try{
+            var getAllProjectsByStateQuery = new GetAllProjectsByStateQuery(state);
+            return this.projectQueryService.handle(getAllProjectsByStateQuery);
+        }catch (IllegalArgumentException e){
+            return Collections.emptyList();
+        }
     }
 }
