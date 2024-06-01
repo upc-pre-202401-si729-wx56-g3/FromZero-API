@@ -3,6 +3,7 @@ package com.acme.fromzeroapi.projects.domain.model.aggregates;
 import com.acme.fromzeroapi.developer.domain.model.aggregates.Developer;
 import com.acme.fromzeroapi.enterprise.domain.model.aggregates.Enterprise;
 import com.acme.fromzeroapi.projects.domain.model.commands.CreateProjectCommand;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 
@@ -34,12 +35,13 @@ public class Project {
     @JoinColumn(name = "developer_id")
     private Developer developer;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     @JoinTable(
             name = "project_candidates",
             joinColumns = @JoinColumn(name = "project_id"),
             inverseJoinColumns = @JoinColumn(name = "developer_id")
     )
+    @JsonManagedReference
     private List<Developer> candidates;
 
     //many to many relationship
@@ -51,7 +53,7 @@ public class Project {
     public Project(CreateProjectCommand command){
         this.name=command.name();
         this.description=command.description();
-        this.state="A espera de desarrollador";
+        this.state="En busqueda";
         this.progress=0.0;
         this.enterprise=command.enterprise();
         this.developer=null;

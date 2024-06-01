@@ -1,6 +1,7 @@
 package com.acme.fromzeroapi.developer.domain.model.aggregates;
 
 import com.acme.fromzeroapi.projects.domain.model.aggregates.Project;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 
@@ -15,6 +16,7 @@ public class Developer {
     private Long id;
     private String name;
     @ManyToMany(mappedBy = "candidates")
+    @JsonBackReference
     private List<Project> projects;
     public Developer(String name){this.name = name;}
     public Developer(){}
