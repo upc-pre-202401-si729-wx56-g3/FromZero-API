@@ -9,21 +9,22 @@ import lombok.Getter;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long userId;
 
     @Column(nullable = false)
-    private String username;
+    private String email;
 
     @Column(nullable = false)
     private String password;
 
     @Column(nullable = false)
-    private String email;
+    private String userType;
+
 
     public User(CreateUserCommand command){
-        this.username = command.username();
-        this.password = command.password();
         this.email = command.email();
+        this.password = command.password();
+        this.userType = command.userType();
     }
     public User() {
 
