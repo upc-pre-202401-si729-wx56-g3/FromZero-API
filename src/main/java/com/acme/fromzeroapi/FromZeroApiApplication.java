@@ -1,5 +1,7 @@
 package com.acme.fromzeroapi;
 
+import com.acme.fromzeroapi.developer_branch_projects.domain.model.aggregates.Developer;
+import com.acme.fromzeroapi.developer_branch_projects.infrastructure.persistence.jpa.repositories.DeveloperRepository;
 import com.acme.fromzeroapi.enterprise_branch_projects.domain.model.aggregates.Enterprise;
 import com.acme.fromzeroapi.enterprise_branch_projects.infrastructure.persistence.jpa.repositories.EnterpriseRepository;
 import org.springframework.boot.CommandLineRunner;
@@ -32,13 +34,20 @@ public class FromZeroApiApplication {
 
 	//borrar luego
 	@Bean
-	CommandLineRunner runner(EnterpriseRepository enterpriseRepository){
+	CommandLineRunner runner(EnterpriseRepository enterpriseRepository,
+							 DeveloperRepository developerRepository){
 		return (String... args)->{
 			List<Enterprise> list= Arrays.asList(
 					new Enterprise("Empresa 1"),
 					new Enterprise("Empresa 2"),
 					new Enterprise("Empresa 3")
 			);
+			List<Developer> devList=Arrays.asList(
+					new Developer("Developer 1"),
+					new Developer("Developer 2"),
+					new Developer("Developer 3")
+			);
+			developerRepository.saveAll(devList);
 			enterpriseRepository.saveAll(list);
 		};
 	}

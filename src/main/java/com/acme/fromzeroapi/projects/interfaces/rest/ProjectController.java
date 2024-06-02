@@ -1,7 +1,9 @@
 package com.acme.fromzeroapi.projects.interfaces.rest;
 
+import com.acme.fromzeroapi.developer_branch_projects.interfaces.acl.DeveloperContextFacade;
 import com.acme.fromzeroapi.enterprise_branch_projects.interfaces.acl.EnterpriseContextFacade;
 import com.acme.fromzeroapi.projects.domain.model.commands.CreateProjectCommand;
+import com.acme.fromzeroapi.projects.domain.model.commands.UpdateProjectCandidatesListCommand;
 import com.acme.fromzeroapi.projects.domain.model.queries.GetAllProjectsByStateQuery;
 import com.acme.fromzeroapi.projects.domain.model.queries.GetAllProjectsQuery;
 import com.acme.fromzeroapi.projects.domain.model.queries.GetProjectByIdQuery;
@@ -9,8 +11,10 @@ import com.acme.fromzeroapi.projects.domain.services.ProjectCommandService;
 import com.acme.fromzeroapi.projects.domain.services.ProjectQueryService;
 import com.acme.fromzeroapi.projects.interfaces.rest.resources.CreateProjectResource;
 import com.acme.fromzeroapi.projects.interfaces.rest.resources.ProjectResource;
+import com.acme.fromzeroapi.projects.interfaces.rest.resources.UpdateProjectCandidatesListResource;
 import com.acme.fromzeroapi.projects.interfaces.rest.transform.CreateProjectResourceFromEntityAssembler;
 import com.acme.fromzeroapi.projects.interfaces.rest.transform.ProjectResourceFromEntityAssembler;
+import com.acme.fromzeroapi.projects.interfaces.rest.transform.UpdatedProjectResourceFromEntityAssembler;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
@@ -29,13 +33,16 @@ public class ProjectController {
     private final ProjectCommandService projectCommandService;
     private final EnterpriseContextFacade enterpriseContextFacade;
     private final ProjectQueryService projectQueryService;
+    private final DeveloperContextFacade developerContextFacade;
 
     public ProjectController(ProjectCommandService projectCommandService,
                              EnterpriseContextFacade enterpriseContextFacade,
-                             ProjectQueryService projectQueryService) {
+                             ProjectQueryService projectQueryService,
+                             DeveloperContextFacade developerContextFacade) {
         this.projectCommandService = projectCommandService;
         this.enterpriseContextFacade = enterpriseContextFacade;
         this.projectQueryService = projectQueryService;
+        this.developerContextFacade = developerContextFacade;
     }
 
     @Operation(summary = "Create project")
@@ -84,5 +91,24 @@ public class ProjectController {
         if(project.isEmpty())return  ResponseEntity.badRequest().build();
         var projectResource = ProjectResourceFromEntityAssembler.toResourceFromEntity(project.get());
         return ResponseEntity.ok(projectResource);
+    }
+
+    @Operation(summary = "Add Candidate to Project")
+    @PatchMapping(value = "/{projectId}/add-candidate")
+    public ResponseEntity<UpdateProjectCandidatesListResource>
+            updateProjectCandidatesList(@PathVariable Long projectId,
+                                        @RequestBody Long developerId){
+        var getProjectByIdQuery = new GetProjectByIdQuery(projectId);
+        var project = this.projectQueryService.handle(getProjectByIdQuery);
+        if (project.isEmpty())return  ResponseEntity.badRequest().build();
+        //get developer by id, usar developer context facade
+        var developer = this.developerContextFacade.getDeveloperById(developerId);
+        if (developer==null)return ResponseEntity.badRequest().build();
+        var updateProjectCandidatesListCommand = new UpdateProjectCandidatesListCommand(developer,project.get());
+        var updatedProject = this.projectCommandService.handle(updateProjectCandidatesListCommand);
+        if(updatedProject.isEmpty())return  ResponseEntity.badRequest().build();
+        //to resource
+        var updatedProjectResource = UpdatedProjectResourceFromEntityAssembler.toResourceFromEntity(updatedProject.get());
+        return ResponseEntity.ok(updatedProjectResource);
     }
 }
