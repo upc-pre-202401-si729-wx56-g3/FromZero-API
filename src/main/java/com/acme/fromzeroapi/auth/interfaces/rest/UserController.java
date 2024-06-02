@@ -2,15 +2,21 @@ package com.acme.fromzeroapi.auth.interfaces.rest;
 
 import com.acme.fromzeroapi.auth.domain.model.aggregates.User;
 import com.acme.fromzeroapi.auth.domain.model.commands.CreateUserCommand;
+import com.acme.fromzeroapi.auth.domain.model.commands.SignUpDeveloperCommand;
+import java.util.Optional;
 import com.acme.fromzeroapi.auth.domain.model.queries.GetAllUsersQuery;
 import com.acme.fromzeroapi.auth.domain.model.queries.GetUserByEmailQuery;
 import com.acme.fromzeroapi.auth.domain.model.queries.GetUserByIdQuery;
 import com.acme.fromzeroapi.auth.domain.services.UserCommandService;
 import com.acme.fromzeroapi.auth.domain.services.UserQueryService;
+import com.acme.fromzeroapi.auth.interfaces.rest.resources.SignUpDeveloperResource;
+import com.acme.fromzeroapi.auth.interfaces.rest.transform.DeveloperCommandFromSignUpDeveloperResourceAssembler;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -45,11 +51,16 @@ public class UserController {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
-    @Operation(summary = "Create user")
+    @Operation(summary = "Create Developer")
     @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody CreateUserCommand command) {
-        return userCommandService.handle(command)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.unprocessableEntity().build());
+    public ResponseEntity<User> createUser(@RequestBody SignUpDeveloperResource resource) {
+        SignUpDeveloperCommand command = DeveloperCommandFromSignUpDeveloperResourceAssembler.toCommandFromResource(resource);
+        Optional<User> user = userCommandService.handle(command);
+
+        if (user.isPresent()) {
+            return ResponseEntity.ok(user.get());
+        } else {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to register developer");
+        }
     }
 }
