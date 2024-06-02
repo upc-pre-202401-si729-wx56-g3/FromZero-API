@@ -25,39 +25,39 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/v1/api/users")
+@RequestMapping("/v1/api/auth")
 @Tag(name = "Users", description = "Operations related to users")
 public class UserController {
     private final UserCommandService userCommandService;
-    private final UserQueryService userQueryService;
+//  private final UserQueryService userQueryService;
 
     public UserController(UserCommandService userCommandService, UserQueryService userQueryService) {
         this.userCommandService = userCommandService;
-        this.userQueryService = userQueryService;
+        //this.userQueryService = userQueryService;
     }
 
-    @Operation(summary = "Get all users")
-    @GetMapping
-    public ResponseEntity<List<User>> getAllUsers(){
-        return ResponseEntity.ok(userQueryService.handle(new GetAllUsersQuery()));
-    }
-    @Operation(summary = "Get user by id")
-    @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable Long id) {
-        return userQueryService.handle(new GetUserByIdQuery(id))
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-    }
-    @Operation(summary = "Get user by email")
-    @GetMapping("/email/{email}")
-    public ResponseEntity<User> getUserByEmail(@PathVariable String email) {
-        return userQueryService.handle(new GetUserByEmailQuery(email))
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-    }
+//    @Operation(summary = "Get all users")
+//    @GetMapping
+//    public ResponseEntity<List<User>> getAllUsers(){
+//        return ResponseEntity.ok(userQueryService.handle(new GetAllUsersQuery()));
+//    }
+//    @Operation(summary = "Get user by id")
+//    @GetMapping("/{id}")
+//    public ResponseEntity<User> getUserById(@PathVariable Long id) {
+//        return userQueryService.handle(new GetUserByIdQuery(id))
+//                .map(ResponseEntity::ok)
+//                .orElse(ResponseEntity.notFound().build());
+//    }
+//    @Operation(summary = "Get user by email")
+//    @GetMapping("/email/{email}")
+//    public ResponseEntity<User> getUserByEmail(@PathVariable String email) {
+//        return userQueryService.handle(new GetUserByEmailQuery(email))
+//                .map(ResponseEntity::ok)
+//                .orElse(ResponseEntity.notFound().build());
+//    }
 
     @Operation(summary = "Create Developer")
-    @PostMapping("/developer")
+    @PostMapping("/register-developer")
     public ResponseEntity<User> createDeveloper(@RequestBody SignUpDeveloperResource resource) {
         SignUpDeveloperCommand command = DeveloperCommandFromSignUpDeveloperResourceAssembler.toCommandFromResource(resource);
         Optional<User> user = userCommandService.handle(command);
@@ -69,7 +69,7 @@ public class UserController {
         }
     }
     @Operation(summary = "Create Enterprise")
-    @PostMapping("/enterprise")
+    @PostMapping("/register-enterprise")
     public ResponseEntity<User> createEnterprise(@RequestBody SignUpEnterpriseResource resource) {
         SignUpEnterpriseCommand command = EnterpriseCommandFromSignUpEnterpriseResourceAssembler.toCommandFromResource(resource);
         Optional<User> user = userCommandService.handle(command);
