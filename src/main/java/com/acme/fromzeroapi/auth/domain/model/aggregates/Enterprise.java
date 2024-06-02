@@ -23,4 +23,25 @@ public class Enterprise {
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    public Enterprise(
+            User user,
+            String enterpriseName,
+            String description,
+            String country,
+            String ruc,
+            String phone,
+            String website,
+            String profileImgUrl,
+            String sector) {
+        this.user = user;
+        this.enterpriseName = enterpriseName;
+        this.description = description;
+        this.country = country;
+        this.ruc = ruc;
+        this.phone = phone;
+        this.website = website;
+        this.profileImgUrl = profileImgUrl;
+        this.sector = sector;
+    }
 }

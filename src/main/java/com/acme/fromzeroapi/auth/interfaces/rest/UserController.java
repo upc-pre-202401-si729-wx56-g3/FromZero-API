@@ -4,13 +4,17 @@ import com.acme.fromzeroapi.auth.domain.model.aggregates.User;
 import com.acme.fromzeroapi.auth.domain.model.commands.CreateUserCommand;
 import com.acme.fromzeroapi.auth.domain.model.commands.SignUpDeveloperCommand;
 import java.util.Optional;
+
+import com.acme.fromzeroapi.auth.domain.model.commands.SignUpEnterpriseCommand;
 import com.acme.fromzeroapi.auth.domain.model.queries.GetAllUsersQuery;
 import com.acme.fromzeroapi.auth.domain.model.queries.GetUserByEmailQuery;
 import com.acme.fromzeroapi.auth.domain.model.queries.GetUserByIdQuery;
 import com.acme.fromzeroapi.auth.domain.services.UserCommandService;
 import com.acme.fromzeroapi.auth.domain.services.UserQueryService;
 import com.acme.fromzeroapi.auth.interfaces.rest.resources.SignUpDeveloperResource;
+import com.acme.fromzeroapi.auth.interfaces.rest.resources.SignUpEnterpriseResource;
 import com.acme.fromzeroapi.auth.interfaces.rest.transform.DeveloperCommandFromSignUpDeveloperResourceAssembler;
+import com.acme.fromzeroapi.auth.interfaces.rest.transform.EnterpriseCommandFromSignUpEnterpriseResourceAssembler;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
@@ -51,10 +55,23 @@ public class UserController {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
+
     @Operation(summary = "Create Developer")
-    @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody SignUpDeveloperResource resource) {
+    @PostMapping("/developer")
+    public ResponseEntity<User> createDeveloper(@RequestBody SignUpDeveloperResource resource) {
         SignUpDeveloperCommand command = DeveloperCommandFromSignUpDeveloperResourceAssembler.toCommandFromResource(resource);
+        Optional<User> user = userCommandService.handle(command);
+
+        if (user.isPresent()) {
+            return ResponseEntity.ok(user.get());
+        } else {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to register developer");
+        }
+    }
+    @Operation(summary = "Create Enterprise")
+    @PostMapping("/enterprise")
+    public ResponseEntity<User> createEnterprise(@RequestBody SignUpEnterpriseResource resource) {
+        SignUpEnterpriseCommand command = EnterpriseCommandFromSignUpEnterpriseResourceAssembler.toCommandFromResource(resource);
         Optional<User> user = userCommandService.handle(command);
 
         if (user.isPresent()) {
