@@ -1,6 +1,7 @@
 package com.acme.fromzeroapi.projects.application.internal.queryServices;
 
 import com.acme.fromzeroapi.projects.domain.model.aggregates.Project;
+import com.acme.fromzeroapi.projects.domain.model.queries.GetAllProjectsByDeveloperIdQuery;
 import com.acme.fromzeroapi.projects.domain.model.queries.GetAllProjectsByStateQuery;
 import com.acme.fromzeroapi.projects.domain.model.queries.GetAllProjectsQuery;
 import com.acme.fromzeroapi.projects.domain.model.queries.GetProjectByIdQuery;
@@ -31,5 +32,10 @@ public class ProjectQueryServiceImpl implements ProjectQueryService {
     @Override
     public Optional<Project> handle(GetProjectByIdQuery query) {
         return this.projectRepository.findById(query.id());
+    }
+
+    @Override
+    public List<Project> handle(GetAllProjectsByDeveloperIdQuery query) {
+        return this.projectRepository.findAllByDeveloper(query.developer());
     }
 }

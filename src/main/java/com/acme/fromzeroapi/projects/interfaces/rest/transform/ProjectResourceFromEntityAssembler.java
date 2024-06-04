@@ -15,10 +15,13 @@ public class ProjectResourceFromEntityAssembler {
                     entity.getState(), entity.getProgress(),entity.getEnterprise().getId(),entity.getCandidates());
         }
 
-        //if ()
-        return new ProjectResource(entity.getId(),entity.getName(),entity.getDescription(),
-                entity.getState(), entity.getProgress(),entity.getEnterprise().getId(),
-                entity.getDeveloper().getId(),entity.getCandidates());
+        if("En progreso".equals(entity.getState())){
+            return new ProjectResource(entity.getId(),entity.getName(),entity.getDescription(),
+                    entity.getState(), entity.getProgress(),entity.getEnterprise().getId(),
+                    entity.getDeveloper().getId(),entity.getCandidates());
+        }
+
+        throw new IllegalArgumentException("El estado no es valido");
         // si no conincide con algun estado, throw error
     }
 }

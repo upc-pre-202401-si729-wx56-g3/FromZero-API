@@ -35,7 +35,7 @@ public class Project {
     private Enterprise enterprise;
 
     @Setter
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "developer_id")
     private Developer developer;
 

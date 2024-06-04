@@ -5,6 +5,7 @@ import com.acme.fromzeroapi.enterprise_branch_projects.interfaces.acl.Enterprise
 import com.acme.fromzeroapi.projects.domain.model.commands.AssignProjectDeveloperCommand;
 import com.acme.fromzeroapi.projects.domain.model.commands.CreateProjectCommand;
 import com.acme.fromzeroapi.projects.domain.model.commands.UpdateProjectCandidatesListCommand;
+import com.acme.fromzeroapi.projects.domain.model.queries.GetAllProjectsByDeveloperIdQuery;
 import com.acme.fromzeroapi.projects.domain.model.queries.GetAllProjectsByStateQuery;
 import com.acme.fromzeroapi.projects.domain.model.queries.GetAllProjectsQuery;
 import com.acme.fromzeroapi.projects.domain.model.queries.GetProjectByIdQuery;
@@ -133,4 +134,17 @@ public class ProjectController {
         return ResponseEntity.ok(updatedProjectResource);
     }
 
+    @Operation(summary = "Get All Projects By Developer Id")
+    @GetMapping(value = "developer/{developerId}")
+    public ResponseEntity<List<ProjectResource>> getAllProjectsByDeveloperId(@PathVariable Long developerId){
+        //get developer con el facade
+        var developer = this.developerContextFacade.getDeveloperById(developerId);
+        if(developer==null) return ResponseEntity.badRequest().build();
+        var getProjectsByDeveloperIdQuery = new GetAllProjectsByDeveloperIdQuery(developer);
+        var projects=this.projectQueryService.handle(getProjectsByDeveloperIdQuery);
+        var projectsResources = projects.stream()
+                .map(ProjectResourceFromEntityAssembler::toResourceFromEntity)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(projectsResources);
+    }
 }
