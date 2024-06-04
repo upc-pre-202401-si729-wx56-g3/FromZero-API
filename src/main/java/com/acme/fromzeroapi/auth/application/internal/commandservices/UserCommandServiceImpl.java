@@ -1,5 +1,6 @@
 package com.acme.fromzeroapi.auth.application.internal.commandservices;
 
+import com.acme.fromzeroapi.auth.application.internal.outboundservices.hashing.HashingService;
 import com.acme.fromzeroapi.auth.domain.model.aggregates.Developer;
 import com.acme.fromzeroapi.auth.domain.model.aggregates.Enterprise;
 import com.acme.fromzeroapi.auth.domain.model.aggregates.User;
@@ -22,10 +23,13 @@ public class UserCommandServiceImpl implements UserCommandService {
     private final DeveloperRepository developerRepository;
     private final EnterpriseRepository enterpriseRepository;
 
-    public UserCommandServiceImpl(UserRepository userRepository, DeveloperRepository developerRepository, EnterpriseRepository enterpriseRepository) {
+    private final HashingService hashingService;
+
+    public UserCommandServiceImpl(UserRepository userRepository, DeveloperRepository developerRepository, EnterpriseRepository enterpriseRepository, HashingService hashingService) {
         this.userRepository = userRepository;
         this.developerRepository = developerRepository;
         this.enterpriseRepository = enterpriseRepository;
+        this.hashingService = hashingService;
     }
 
     @Override
@@ -37,7 +41,7 @@ public class UserCommandServiceImpl implements UserCommandService {
 
         User user = new User(new CreateUserCommand(
                 email,
-                command.createUserCommand().password(),
+                hashingService.encode(command.createUserCommand().password()),
                 command.createUserCommand().userType()
         ));
         userRepository.save(user);
@@ -67,7 +71,7 @@ public class UserCommandServiceImpl implements UserCommandService {
 
         User user = new User(new CreateUserCommand(
                 email,
-                command.createUserCommand().password(),
+                hashingService.encode(command.createUserCommand().password()),
                 command.createUserCommand().userType()
         ));
         userRepository.save(user);
