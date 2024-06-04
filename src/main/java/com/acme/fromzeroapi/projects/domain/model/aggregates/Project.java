@@ -5,7 +5,9 @@ import com.acme.fromzeroapi.enterprise_branch_projects.domain.model.aggregates.E
 import com.acme.fromzeroapi.projects.domain.model.commands.CreateProjectCommand;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
@@ -23,6 +25,7 @@ public class Project {
     @Column(nullable = false)
     private String description;
 
+    @Setter
     private String state;
 
     private Double progress;
@@ -31,6 +34,7 @@ public class Project {
     @JoinColumn(name = "enterprise_id")
     private Enterprise enterprise;
 
+    @Setter
     @OneToOne
     @JoinColumn(name = "developer_id")
     private Developer developer;
@@ -62,4 +66,5 @@ public class Project {
     public Project(){
 
     }
+
 }

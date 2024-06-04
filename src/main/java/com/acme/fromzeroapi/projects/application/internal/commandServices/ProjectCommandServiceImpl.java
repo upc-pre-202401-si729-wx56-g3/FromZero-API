@@ -1,6 +1,7 @@
 package com.acme.fromzeroapi.projects.application.internal.commandServices;
 
 import com.acme.fromzeroapi.projects.domain.model.aggregates.Project;
+import com.acme.fromzeroapi.projects.domain.model.commands.AssignProjectDeveloperCommand;
 import com.acme.fromzeroapi.projects.domain.model.commands.CreateProjectCommand;
 import com.acme.fromzeroapi.projects.domain.model.commands.UpdateProjectCandidatesListCommand;
 import com.acme.fromzeroapi.projects.domain.services.ProjectCommandService;
@@ -18,7 +19,6 @@ public class ProjectCommandServiceImpl implements ProjectCommandService {
 
     @Override
     public Optional<Project> handle(CreateProjectCommand command) {
-        // ...
         var project= new Project(command);
         this.projectRepository.save(project);
         return Optional.of(project);
@@ -27,13 +27,17 @@ public class ProjectCommandServiceImpl implements ProjectCommandService {
     @Override
     public Optional<Project> handle(UpdateProjectCandidatesListCommand command) {
         var project = command.project();
-        //var developer=command.developer();
         project.getCandidates().add(command.developer());
-        //developer.getProjects().add(project);
-        //System.out.println("Proyectos del developer: "+developer.getProjects());
-        //System.out.println("El developer es: "+developer);
-        //developer.getProjects().add(command.project());
+        this.projectRepository.save(project);
+        return Optional.of(project);
+    }
 
+    @Override
+    public Optional<Project> handle(AssignProjectDeveloperCommand command) {
+        var project =command.project();
+        project.setDeveloper(command.developer());
+        project.getCandidates().clear();
+        project.setState("En progreso");
         this.projectRepository.save(project);
         return Optional.of(project);
     }
