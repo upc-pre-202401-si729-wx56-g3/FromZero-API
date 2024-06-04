@@ -4,12 +4,14 @@ import com.acme.fromzeroapi.auth.domain.model.aggregates.Developer;
 import com.acme.fromzeroapi.auth.domain.model.aggregates.Enterprise;
 import com.acme.fromzeroapi.auth.domain.model.aggregates.User;
 import com.acme.fromzeroapi.auth.domain.model.commands.CreateUserCommand;
+import com.acme.fromzeroapi.auth.domain.model.commands.SignInCommand;
 import com.acme.fromzeroapi.auth.domain.model.commands.SignUpDeveloperCommand;
 import com.acme.fromzeroapi.auth.domain.model.commands.SignUpEnterpriseCommand;
 import com.acme.fromzeroapi.auth.domain.services.UserCommandService;
 import com.acme.fromzeroapi.auth.infraestructure.persistence.jpa.repositories.DeveloperRepository;
 import com.acme.fromzeroapi.auth.infraestructure.persistence.jpa.repositories.EnterpriseRepository;
 import com.acme.fromzeroapi.auth.infraestructure.persistence.jpa.repositories.UserRepository;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -84,6 +86,11 @@ public class UserCommandServiceImpl implements UserCommandService {
         enterpriseRepository.save(enterprise);
 
         return Optional.of(user);
+    }
+
+    @Override
+    public Optional<ImmutablePair<User, String>> handle(SignInCommand command) {
+        return Optional.empty();
     }
 }
 
