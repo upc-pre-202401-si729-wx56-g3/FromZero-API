@@ -99,7 +99,7 @@ public class ProjectController {
         var programmingLanguages = getProgrammingLanguages(resource.languages());
         var frameworks=getFrameworks(resource.frameworks());
         var createProjectCommand = new CreateProjectCommand(resource.name(), resource.description(), enterprise,
-                programmingLanguages,frameworks);
+                programmingLanguages,frameworks,resource.type(),resource.budget(),resource.methodologies());
         var project = this.projectCommandService.handle(createProjectCommand);
         if (project.isEmpty()) return ResponseEntity.badRequest().build();
 

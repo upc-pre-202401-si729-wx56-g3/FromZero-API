@@ -19,6 +19,6 @@ public class CreateProjectResourceFromEntityAssembler {
                 .map(Framework::getId)
                 .collect(Collectors.toList());
         return new CreateProjectResource(entity.getName(), entity.getDescription(), entity.getEnterprise().getId(),
-                languageIds,frameworkIds);
+                languageIds,frameworkIds,entity.getType(),entity.getBudget(),entity.getMethodologies());
     }
 }

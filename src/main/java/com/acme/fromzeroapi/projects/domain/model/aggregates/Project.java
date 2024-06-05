@@ -70,11 +70,13 @@ public class Project {
     @JsonManagedReference
     private List<Framework> frameworks;
 
-    //private String type;
+    private String type;
 
-    //private String budget;
+    @Lob
+    private String budget;
 
-    //private String methodologies;
+    @Lob
+    private String methodologies;
 
     public Project(CreateProjectCommand command){
         this.name=command.name();
@@ -85,6 +87,10 @@ public class Project {
         this.developer=null;
         this.languages=new ArrayList<>();
         this.frameworks=new ArrayList<>();
+        this.type=command.type();
+        this.budget=command.budget();
+        this.methodologies=command.methodologies();
+
     }
 
     public Project(){

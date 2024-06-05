@@ -6,7 +6,7 @@ import java.util.List;
 
 public record CreateProjectResource(
         String name, String description,Long ownerId,List<Integer> languages,
-        List<Integer> frameworks){
+        List<Integer> frameworks,String type,String budget, String methodologies){
 
     /*public CreateProjectResource (String name, String description, Long ownerId){
         this(name, description, ownerId, List.of(),List.of());

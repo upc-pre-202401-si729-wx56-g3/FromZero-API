@@ -8,6 +8,7 @@ import java.util.List;
 
 public record CreateProjectCommand(
         String name, String description, Enterprise enterprise,
-        List<ProgrammingLanguage> languages, List<Framework> frameworks) {
+        List<ProgrammingLanguage> languages, List<Framework> frameworks,String type,
+        String budget,String methodologies) {
 
 }

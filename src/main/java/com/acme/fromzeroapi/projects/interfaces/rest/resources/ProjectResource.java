@@ -9,28 +9,19 @@ import java.util.List;
 public record ProjectResource(
         Long id, String name, String description, String state, Double progress,
         Long ownerId, Long developerId, List<Developer> candidatesList,
-        List<ProgrammingLanguage> languages, List<Framework> frameworks) {
+        List<ProgrammingLanguage> languages, List<Framework> frameworks,String type,
+        String budget,String methodologies) {
     public ProjectResource{
         if(id==null || name==null || description==null){
             throw new NullPointerException("id is null");
         }
     }
 
-    /**
-     * Constructor for projects with the following parameters:
-     * Long id
-     * String name
-     * String description
-     * String state = "En busqueda"
-     * String progress
-     * Long ownerId
-     * Long developerId = null
-     * List< Developer> candidatesList = either full or empty
-     */
     public ProjectResource(Long id,String name, String description, String state,
                            Double progress, Long ownerId,List<Developer> candidatesList,
-                           List<ProgrammingLanguage> languages, List<Framework> frameworks){
+                           List<ProgrammingLanguage> languages, List<Framework> frameworks,
+                           String type,String budget,String methodologies){
         this(id,name,description,state,progress,ownerId,null,candidatesList
-                ,languages,frameworks);//mas columnas
+                ,languages,frameworks, type,budget,methodologies);
     }
 }
