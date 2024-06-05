@@ -1,10 +1,8 @@
 package com.acme.fromzeroapi.projects.application.internal.queryServices;
 
+import com.acme.fromzeroapi.projects.domain.model.aggregates.ProgrammingLanguage;
 import com.acme.fromzeroapi.projects.domain.model.aggregates.Project;
-import com.acme.fromzeroapi.projects.domain.model.queries.GetAllProjectsByDeveloperIdQuery;
-import com.acme.fromzeroapi.projects.domain.model.queries.GetAllProjectsByStateQuery;
-import com.acme.fromzeroapi.projects.domain.model.queries.GetAllProjectsQuery;
-import com.acme.fromzeroapi.projects.domain.model.queries.GetProjectByIdQuery;
+import com.acme.fromzeroapi.projects.domain.model.queries.*;
 import com.acme.fromzeroapi.projects.domain.services.ProjectQueryService;
 import com.acme.fromzeroapi.projects.infrastructure.persistence.jpa.repositories.ProjectRepository;
 import org.springframework.stereotype.Service;

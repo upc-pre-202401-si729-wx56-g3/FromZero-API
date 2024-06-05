@@ -1,5 +1,6 @@
 package com.acme.fromzeroapi.projects.application.internal.commandServices;
 
+import com.acme.fromzeroapi.projects.domain.model.aggregates.ProgrammingLanguage;
 import com.acme.fromzeroapi.projects.domain.model.aggregates.Project;
 import com.acme.fromzeroapi.projects.domain.model.commands.AssignProjectDeveloperCommand;
 import com.acme.fromzeroapi.projects.domain.model.commands.CreateProjectCommand;
@@ -20,6 +21,11 @@ public class ProjectCommandServiceImpl implements ProjectCommandService {
     @Override
     public Optional<Project> handle(CreateProjectCommand command) {
         var project= new Project(command);
+
+        this.projectRepository.save(project);
+
+        project.getLanguages().addAll(command.languages());
+        project.getFrameworks().addAll(command.frameworks());
         this.projectRepository.save(project);
         return Optional.of(project);
     }

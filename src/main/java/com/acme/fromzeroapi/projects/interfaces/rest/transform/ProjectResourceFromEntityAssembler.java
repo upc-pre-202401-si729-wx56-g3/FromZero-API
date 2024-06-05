@@ -12,13 +12,15 @@ public class ProjectResourceFromEntityAssembler {
              * Returns ProjectResource
              */
             return new ProjectResource(entity.getId(),entity.getName(),entity.getDescription(),
-                    entity.getState(), entity.getProgress(),entity.getEnterprise().getId(),entity.getCandidates());
+                    entity.getState(), entity.getProgress(),entity.getEnterprise().getId(),entity.getCandidates(),
+                    entity.getLanguages(),entity.getFrameworks());
         }
 
         if("En progreso".equals(entity.getState())){
             return new ProjectResource(entity.getId(),entity.getName(),entity.getDescription(),
                     entity.getState(), entity.getProgress(),entity.getEnterprise().getId(),
-                    entity.getDeveloper().getId(),entity.getCandidates());
+                    entity.getDeveloper().getId(),entity.getCandidates(),
+                    entity.getLanguages(),entity.getFrameworks());
         }
 
         throw new IllegalArgumentException("El estado no es valido");

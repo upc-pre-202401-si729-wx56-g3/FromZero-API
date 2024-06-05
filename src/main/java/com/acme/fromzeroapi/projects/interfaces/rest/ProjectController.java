@@ -2,13 +2,14 @@ package com.acme.fromzeroapi.projects.interfaces.rest;
 
 import com.acme.fromzeroapi.developer_branch_projects.interfaces.acl.DeveloperContextFacade;
 import com.acme.fromzeroapi.enterprise_branch_projects.interfaces.acl.EnterpriseContextFacade;
+import com.acme.fromzeroapi.projects.domain.model.aggregates.Framework;
+import com.acme.fromzeroapi.projects.domain.model.aggregates.ProgrammingLanguage;
 import com.acme.fromzeroapi.projects.domain.model.commands.AssignProjectDeveloperCommand;
 import com.acme.fromzeroapi.projects.domain.model.commands.CreateProjectCommand;
 import com.acme.fromzeroapi.projects.domain.model.commands.UpdateProjectCandidatesListCommand;
-import com.acme.fromzeroapi.projects.domain.model.queries.GetAllProjectsByDeveloperIdQuery;
-import com.acme.fromzeroapi.projects.domain.model.queries.GetAllProjectsByStateQuery;
-import com.acme.fromzeroapi.projects.domain.model.queries.GetAllProjectsQuery;
-import com.acme.fromzeroapi.projects.domain.model.queries.GetProjectByIdQuery;
+import com.acme.fromzeroapi.projects.domain.model.queries.*;
+import com.acme.fromzeroapi.projects.domain.services.FrameworksQueryService;
+import com.acme.fromzeroapi.projects.domain.services.ProgrammingLanguagesQueryService;
 import com.acme.fromzeroapi.projects.domain.services.ProjectCommandService;
 import com.acme.fromzeroapi.projects.domain.services.ProjectQueryService;
 import com.acme.fromzeroapi.projects.interfaces.rest.resources.AssignProjectDeveloperResource;
@@ -26,6 +27,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -38,15 +40,55 @@ public class ProjectController {
     private final EnterpriseContextFacade enterpriseContextFacade;
     private final ProjectQueryService projectQueryService;
     private final DeveloperContextFacade developerContextFacade;
+    private final ProgrammingLanguagesQueryService programmingLanguagesQueryService;
+    private final FrameworksQueryService frameworksQueryService;
 
     public ProjectController(ProjectCommandService projectCommandService,
                              EnterpriseContextFacade enterpriseContextFacade,
                              ProjectQueryService projectQueryService,
-                             DeveloperContextFacade developerContextFacade) {
+                             DeveloperContextFacade developerContextFacade,
+                             ProgrammingLanguagesQueryService programmingLanguagesQueryService,
+                             FrameworksQueryService frameworksQueryService) {
         this.projectCommandService = projectCommandService;
         this.enterpriseContextFacade = enterpriseContextFacade;
         this.projectQueryService = projectQueryService;
         this.developerContextFacade = developerContextFacade;
+        this.programmingLanguagesQueryService = programmingLanguagesQueryService;
+        this.frameworksQueryService = frameworksQueryService;
+    }
+
+    public List<ProgrammingLanguage> getProgrammingLanguages(List<Integer>languages) {
+        List<Optional<ProgrammingLanguage>> optionalProgrammingLanguages = languages.stream()
+                .map(item -> {
+                    var getLanguageById = new GetProgrammingLanguageByIdQuery(item);
+                    return this.programmingLanguagesQueryService.handle(getLanguageById);
+                })
+                .collect(Collectors.toList());
+
+        // Verificar si alguno de los Optional está vacío
+        /*if (optionalProgrammingLanguages.stream().anyMatch(Optional::isEmpty)) {
+            return ResponseEntity.badRequest().build();
+        }*/
+
+        // Convertir los Optional a ProgrammingLanguage
+        List<ProgrammingLanguage> programmingLanguages = optionalProgrammingLanguages.stream()
+                .map(Optional::get)
+                .collect(Collectors.toList());
+        return programmingLanguages;
+    }
+
+    public List<Framework> getFrameworks(List<Integer> frameworks){
+        List<Optional<Framework>> optionalFrameworks = frameworks.stream()
+                .map(item -> {
+                    var getFrameworkById = new GetFrameworkByIdQuery(item);
+                    return this.frameworksQueryService.handle(getFrameworkById);
+                })
+                .collect(Collectors.toList());
+
+        List<Framework> frameworksList=optionalFrameworks.stream()
+                .map(Optional::get)
+                .collect(Collectors.toList());
+        return frameworksList;
     }
 
     @Operation(summary = "Create project")
@@ -54,9 +96,13 @@ public class ProjectController {
     public ResponseEntity<CreateProjectResource> createProject(@RequestBody CreateProjectResource resource) {
         var enterprise = this.enterpriseContextFacade.getEnterpriseById(resource.ownerId());
         if (enterprise == null) return ResponseEntity.badRequest().build();
-        var createProjectCommand = new CreateProjectCommand(resource.name(), resource.description(), enterprise);
+        var programmingLanguages = getProgrammingLanguages(resource.languages());
+        var frameworks=getFrameworks(resource.frameworks());
+        var createProjectCommand = new CreateProjectCommand(resource.name(), resource.description(), enterprise,
+                programmingLanguages,frameworks);
         var project = this.projectCommandService.handle(createProjectCommand);
         if (project.isEmpty()) return ResponseEntity.badRequest().build();
+
         var createProjectResource = CreateProjectResourceFromEntityAssembler.toResourceFromEntity(project.get());
         return new ResponseEntity<>(createProjectResource, HttpStatus.CREATED);
     }

@@ -9,6 +9,8 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Getter
@@ -49,10 +51,30 @@ public class Project {
     private List<Developer> candidates;
 
     //many to many relationship
-    //private List<ProgrammingLanguages> languages;
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "project_programming_languages",
+            joinColumns = @JoinColumn(name = "project_id"),
+            inverseJoinColumns = @JoinColumn(name = "programming_language_id")
+    )
+    @JsonManagedReference
+    private List<ProgrammingLanguage> languages;
 
     //many to many relationship
-    //private List<Frameworks> frameworks;
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "project_frameworks",
+            joinColumns = @JoinColumn(name = "project_id"),
+            inverseJoinColumns = @JoinColumn(name = "framework_id")
+    )
+    @JsonManagedReference
+    private List<Framework> frameworks;
+
+    //private String type;
+
+    //private String budget;
+
+    //private String methodologies;
 
     public Project(CreateProjectCommand command){
         this.name=command.name();
@@ -61,10 +83,13 @@ public class Project {
         this.progress=0.0;
         this.enterprise=command.enterprise();
         this.developer=null;
+        this.languages=new ArrayList<>();
+        this.frameworks=new ArrayList<>();
     }
 
     public Project(){
 
     }
+
 
 }

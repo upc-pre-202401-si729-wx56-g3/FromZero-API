@@ -4,6 +4,10 @@ import com.acme.fromzeroapi.developer_branch_projects.domain.model.aggregates.De
 import com.acme.fromzeroapi.developer_branch_projects.infrastructure.persistence.jpa.repositories.DeveloperRepository;
 import com.acme.fromzeroapi.enterprise_branch_projects.domain.model.aggregates.Enterprise;
 import com.acme.fromzeroapi.enterprise_branch_projects.infrastructure.persistence.jpa.repositories.EnterpriseRepository;
+import com.acme.fromzeroapi.projects.domain.model.aggregates.Framework;
+import com.acme.fromzeroapi.projects.domain.model.aggregates.ProgrammingLanguage;
+import com.acme.fromzeroapi.projects.infrastructure.persistence.jpa.repositories.FrameworksRepository;
+import com.acme.fromzeroapi.projects.infrastructure.persistence.jpa.repositories.ProgrammingLanguagesRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -35,7 +39,9 @@ public class FromZeroApiApplication {
 	//borrar luego
 	@Bean
 	CommandLineRunner runner(EnterpriseRepository enterpriseRepository,
-							 DeveloperRepository developerRepository){
+							 DeveloperRepository developerRepository,
+							 ProgrammingLanguagesRepository languagesRepository,
+							 FrameworksRepository frameworksRepository){
 		return (String... args)->{
 			List<Enterprise> list= Arrays.asList(
 					new Enterprise("Empresa 1"),
@@ -47,6 +53,19 @@ public class FromZeroApiApplication {
 					new Developer("Developer 2"),
 					new Developer("Developer 3")
 			);
+			List<ProgrammingLanguage> languageList=Arrays.asList(
+					new ProgrammingLanguage("Javascript"),
+					new ProgrammingLanguage("Typescript"),
+					new ProgrammingLanguage("HTML"),
+					new ProgrammingLanguage("CSS")
+			);
+			List<Framework> frameworksList = Arrays.asList(
+					new Framework("Vue Js"),
+					new Framework("Angular"),
+					new Framework("React")
+			);
+			languagesRepository.saveAll(languageList);
+			frameworksRepository.saveAll(frameworksList);
 			developerRepository.saveAll(devList);
 			enterpriseRepository.saveAll(list);
 		};
