@@ -11,10 +11,7 @@ import com.acme.fromzeroapi.auth.domain.model.queries.GetUserByEmailQuery;
 import com.acme.fromzeroapi.auth.domain.model.queries.GetUserByIdQuery;
 import com.acme.fromzeroapi.auth.domain.services.UserCommandService;
 import com.acme.fromzeroapi.auth.domain.services.UserQueryService;
-import com.acme.fromzeroapi.auth.interfaces.rest.resources.AuthenticateUserResource;
-import com.acme.fromzeroapi.auth.interfaces.rest.resources.SignInResource;
-import com.acme.fromzeroapi.auth.interfaces.rest.resources.SignUpDeveloperResource;
-import com.acme.fromzeroapi.auth.interfaces.rest.resources.SignUpEnterpriseResource;
+import com.acme.fromzeroapi.auth.interfaces.rest.resources.*;
 import com.acme.fromzeroapi.auth.interfaces.rest.transform.AuthenticatedUsedResourcerFromEntityAssembler;
 import com.acme.fromzeroapi.auth.interfaces.rest.transform.DeveloperCommandFromSignUpDeveloperResourceAssembler;
 import com.acme.fromzeroapi.auth.interfaces.rest.transform.EnterpriseCommandFromSignUpEnterpriseResourceAssembler;
@@ -62,27 +59,27 @@ public class UserController {
 
     @Operation(summary = "Create Developer")
     @PostMapping("/register-developer")
-    public ResponseEntity<User> createDeveloper(@RequestBody SignUpDeveloperResource resource) {
-        SignUpDeveloperCommand command = DeveloperCommandFromSignUpDeveloperResourceAssembler.toCommandFromResource(resource);
-        Optional<User> user = userCommandService.handle(command);
+    public ResponseEntity<UserResource> createDeveloper(@RequestBody SignUpDeveloperResource resource) {
+        var command = DeveloperCommandFromSignUpDeveloperResourceAssembler.toCommandFromResource(resource);
+        var user = userCommandService.handle(command);
 
-        if (user.isPresent()) {
-            return ResponseEntity.ok(user.get());
-        } else {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to register developer");
+        if (user.isEmpty()){
+            return ResponseEntity.badRequest().build();
         }
+        var userResource = UserResourceFromEntityAssembler.toResourceFromEntity(user.get());
+        return new ResponseEntity<>(userResource, HttpStatus.CREATED);
     }
     @Operation(summary = "Create Enterprise")
     @PostMapping("/register-enterprise")
-    public ResponseEntity<User> createEnterprise(@RequestBody SignUpEnterpriseResource resource) {
-        SignUpEnterpriseCommand command = EnterpriseCommandFromSignUpEnterpriseResourceAssembler.toCommandFromResource(resource);
-        Optional<User> user = userCommandService.handle(command);
+    public ResponseEntity<UserResource> createEnterprise(@RequestBody SignUpEnterpriseResource resource) {
+        var registerCommand = EnterpriseCommandFromSignUpEnterpriseResourceAssembler.toCommandFromResource(resource);
+        var user = userCommandService.handle(registerCommand);
 
-        if (user.isPresent()) {
-            return ResponseEntity.ok(user.get());
-        } else {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to register developer");
+        if (user.isEmpty()){
+            return ResponseEntity.badRequest().build();
         }
+        var userResource = UserResourceFromEntityAssembler.toResourceFromEntity(user.get());
+        return new ResponseEntity<>(userResource, HttpStatus.CREATED);
     }
 
     @Operation(summary = "sign in")
