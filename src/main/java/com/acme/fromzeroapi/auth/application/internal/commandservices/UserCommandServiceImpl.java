@@ -94,7 +94,14 @@ public class UserCommandServiceImpl implements UserCommandService {
 
     @Override
     public Optional<ImmutablePair<User, String>> handle(SignInCommand command) {
-        return Optional.empty();
+        var user = userRepository.findByEmail(command.email());
+        if (user.isEmpty()) {
+            throw new IllegalArgumentException("User not found");
+        }
+        if (!hashingService.matches(command.password(), user.get().getPassword())) {
+            throw new IllegalArgumentException("Invalid password");
+        }
+        return Optional.of(ImmutablePair.of(user.get(), "token"));
     }
 }
 

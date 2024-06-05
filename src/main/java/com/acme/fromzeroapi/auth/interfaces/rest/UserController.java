@@ -11,10 +11,14 @@ import com.acme.fromzeroapi.auth.domain.model.queries.GetUserByEmailQuery;
 import com.acme.fromzeroapi.auth.domain.model.queries.GetUserByIdQuery;
 import com.acme.fromzeroapi.auth.domain.services.UserCommandService;
 import com.acme.fromzeroapi.auth.domain.services.UserQueryService;
+import com.acme.fromzeroapi.auth.interfaces.rest.resources.AuthenticateUserResource;
+import com.acme.fromzeroapi.auth.interfaces.rest.resources.SignInResource;
 import com.acme.fromzeroapi.auth.interfaces.rest.resources.SignUpDeveloperResource;
 import com.acme.fromzeroapi.auth.interfaces.rest.resources.SignUpEnterpriseResource;
+import com.acme.fromzeroapi.auth.interfaces.rest.transform.AuthenticatedUsedResourcerFromEntityAssembler;
 import com.acme.fromzeroapi.auth.interfaces.rest.transform.DeveloperCommandFromSignUpDeveloperResourceAssembler;
 import com.acme.fromzeroapi.auth.interfaces.rest.transform.EnterpriseCommandFromSignUpEnterpriseResourceAssembler;
+import com.acme.fromzeroapi.auth.interfaces.rest.transform.SignInCommandFromResourceAssembler;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
@@ -79,5 +83,21 @@ public class UserController {
         } else {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to register developer");
         }
+    }
+
+    @Operation(summary = "sign in")
+    @PostMapping("/sign-in")
+    public ResponseEntity<AuthenticateUserResource> signIn(@RequestBody SignInResource signInResource){
+        var signInCommand = SignInCommandFromResourceAssembler.toCommandFromResource(signInResource);
+        var authenticatedUser = userCommandService.handle(signInCommand);
+
+        if(authenticatedUser.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
+
+        var authenticatedUserResource = AuthenticatedUsedResourcerFromEntityAssembler.toResourceFromEntity(
+                authenticatedUser.get().getLeft());
+
+        return ResponseEntity.ok(authenticatedUserResource);
     }
 }
