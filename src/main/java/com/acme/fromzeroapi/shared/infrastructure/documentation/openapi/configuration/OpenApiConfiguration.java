@@ -1,6 +1,5 @@
-package com.acme.fromzeroapi.shared.infraestructure.documentation.openapi.configuration;
+package com.acme.fromzeroapi.shared.infrastructure.documentation.openapi.configuration;
 
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.models.ExternalDocumentation;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
