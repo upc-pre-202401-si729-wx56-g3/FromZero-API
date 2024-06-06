@@ -75,9 +75,11 @@ public class Project {
     private String type;
 
     @Lob
+    @Column(columnDefinition = "TEXT")
     private String budget;
 
     @Lob
+    @Column(columnDefinition = "TEXT")
     private String methodologies;
 
     public Project(CreateProjectCommand command){
