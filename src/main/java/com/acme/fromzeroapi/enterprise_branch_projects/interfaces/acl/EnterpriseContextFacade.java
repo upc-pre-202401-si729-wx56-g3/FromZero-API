@@ -1,6 +1,7 @@
 package com.acme.fromzeroapi.enterprise_branch_projects.interfaces.acl;
 
-import com.acme.fromzeroapi.enterprise_branch_projects.domain.model.aggregates.Enterprise;
+//import com.acme.fromzeroapi.enterprise_branch_projects.domain.model.aggregates.Enterprise;
+import com.acme.fromzeroapi.auth.domain.model.aggregates.Enterprise;
 import com.acme.fromzeroapi.enterprise_branch_projects.domain.model.queries.GetEnterpriseByIdQuery;
 import com.acme.fromzeroapi.enterprise_branch_projects.domain.services.EnterpriseQueryService;
 import org.springframework.stereotype.Service;

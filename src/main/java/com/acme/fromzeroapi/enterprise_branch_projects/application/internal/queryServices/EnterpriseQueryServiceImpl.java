@@ -1,9 +1,10 @@
 package com.acme.fromzeroapi.enterprise_branch_projects.application.internal.queryServices;
 
-import com.acme.fromzeroapi.enterprise_branch_projects.domain.model.aggregates.Enterprise;
+import com.acme.fromzeroapi.auth.infraestructure.persistence.jpa.repositories.EnterpriseRepository;
+//import com.acme.fromzeroapi.enterprise_branch_projects.domain.model.aggregates.Enterprise;
+import com.acme.fromzeroapi.auth.domain.model.aggregates.Enterprise;
 import com.acme.fromzeroapi.enterprise_branch_projects.domain.model.queries.GetEnterpriseByIdQuery;
 import com.acme.fromzeroapi.enterprise_branch_projects.domain.services.EnterpriseQueryService;
-import com.acme.fromzeroapi.enterprise_branch_projects.infrastructure.persistence.jpa.repositories.EnterpriseRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;

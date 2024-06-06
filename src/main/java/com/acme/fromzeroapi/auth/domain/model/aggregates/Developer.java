@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 
+@Getter
 @Entity
 public class Developer {
     @Id
@@ -46,5 +47,9 @@ public class Developer {
         this.completedProjects = completedProjects;
         this.specialties = specialties;
         this.profileImgUrl = profileImgUrl;
+    }
+
+    public Developer() {
+
     }
 }

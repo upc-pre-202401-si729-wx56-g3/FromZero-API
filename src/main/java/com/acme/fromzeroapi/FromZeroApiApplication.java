@@ -1,9 +1,11 @@
 package com.acme.fromzeroapi;
 
-import com.acme.fromzeroapi.developer_branch_projects.domain.model.aggregates.Developer;
-import com.acme.fromzeroapi.developer_branch_projects.infrastructure.persistence.jpa.repositories.DeveloperRepository;
-import com.acme.fromzeroapi.enterprise_branch_projects.domain.model.aggregates.Enterprise;
-import com.acme.fromzeroapi.enterprise_branch_projects.infrastructure.persistence.jpa.repositories.EnterpriseRepository;
+import com.acme.fromzeroapi.auth.domain.model.aggregates.Developer;
+import com.acme.fromzeroapi.auth.domain.model.aggregates.Enterprise;
+import com.acme.fromzeroapi.auth.domain.model.aggregates.User;
+import com.acme.fromzeroapi.auth.infraestructure.persistence.jpa.repositories.DeveloperRepository;
+import com.acme.fromzeroapi.auth.infraestructure.persistence.jpa.repositories.EnterpriseRepository;
+import com.acme.fromzeroapi.auth.infraestructure.persistence.jpa.repositories.UserRepository;
 import com.acme.fromzeroapi.projects.domain.model.aggregates.Framework;
 import com.acme.fromzeroapi.projects.domain.model.aggregates.ProgrammingLanguage;
 import com.acme.fromzeroapi.projects.infrastructure.persistence.jpa.repositories.FrameworksRepository;
@@ -36,8 +38,42 @@ public class FromZeroApiApplication {
 		};
 	}
 
+    @Bean
+    CommandLineRunner runner(UserRepository userRepository,
+							 DeveloperRepository developerRepository,
+							 EnterpriseRepository enterpriseRepository,
+							 ProgrammingLanguagesRepository languagesRepository,
+							 FrameworksRepository frameworksRepository){
+        return (String... args)->{
+            User user1 = new User("usuario1@gmail.com","contrasena1","D");
+            User user2 = new User("usuario1@gmail.com","contrasena1","E");
+            userRepository.save(user1);
+            userRepository.save(user2);
+            Developer dev1 = new Developer(user1, "Jose","Vasquez","descripcion 1","Peru","999999999",0,
+					"Specialidades","https://cdn-icons-png.flaticon.com/512/3237/3237472.png");
+			Enterprise emp1 = new Enterprise(user2,"geekit","geekit description","Peru","947921342","999999991",
+					"website","https://cdn-icons-png.flaticon.com/512/3237/3237472.png","sector 1");
+			developerRepository.save(dev1);
+			enterpriseRepository.save(emp1);
+
+
+			List<ProgrammingLanguage> languageList=Arrays.asList(
+					new ProgrammingLanguage("Javascript"),
+					new ProgrammingLanguage("Typescript"),
+					new ProgrammingLanguage("HTML"),
+					new ProgrammingLanguage("CSS")
+			);
+			List<Framework> frameworksList = Arrays.asList(
+					new Framework("Vue Js"),
+					new Framework("Angular"),
+					new Framework("React")
+			);
+			languagesRepository.saveAll(languageList);
+			frameworksRepository.saveAll(frameworksList);
+        };
+    }
 	//borrar luego
-	@Bean
+	/*@Bean
 	CommandLineRunner runner(EnterpriseRepository enterpriseRepository,
 							 DeveloperRepository developerRepository,
 							 ProgrammingLanguagesRepository languagesRepository,
@@ -69,5 +105,5 @@ public class FromZeroApiApplication {
 			developerRepository.saveAll(devList);
 			enterpriseRepository.saveAll(list);
 		};
-	}
+	}*/
 }
