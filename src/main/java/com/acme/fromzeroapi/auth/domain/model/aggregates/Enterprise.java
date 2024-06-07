@@ -2,7 +2,9 @@ package com.acme.fromzeroapi.auth.domain.model.aggregates;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import lombok.Getter;
 
+@Getter
 @Entity
 public class Enterprise {
     @Id
@@ -43,5 +45,9 @@ public class Enterprise {
         this.website = website;
         this.profileImgUrl = profileImgUrl;
         this.sector = sector;
+    }
+
+    public Enterprise() {
+
     }
 }
