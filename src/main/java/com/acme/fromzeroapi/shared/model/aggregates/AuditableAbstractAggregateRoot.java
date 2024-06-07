@@ -9,22 +9,12 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.util.Date;
 
+@Getter
 @EntityListeners(AuditingEntityListener.class)
 @MappedSuperclass
 public class AuditableAbstractAggregateRoot<T extends AbstractAggregateRoot<T>> extends AbstractAggregateRoot<T> {
 
     @Id
     @GeneratedValue(strategy =  GenerationType.IDENTITY)
-    @Getter
     private Long id;
-
-    @Getter
-    @CreatedDate
-    @Column(nullable = false, updatable = false)
-    private Date createAt;
-
-    @Getter
-    @LastModifiedDate
-    @Column(nullable = false)
-    private Date updateAt;
 }

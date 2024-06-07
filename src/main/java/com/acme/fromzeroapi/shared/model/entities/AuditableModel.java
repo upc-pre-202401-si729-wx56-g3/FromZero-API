@@ -10,16 +10,15 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.util.Date;
 
+@Getter
 @EntityListeners(AuditingEntityListener.class)
 @MappedSuperclass
 public class AuditableModel {
 
-    @Getter
     @CreatedDate
     @Column(nullable = false, updatable = false)
     private Date createAt;
 
-    @Getter
     @LastModifiedDate
     @Column(nullable = false)
     private Date updateAt;
