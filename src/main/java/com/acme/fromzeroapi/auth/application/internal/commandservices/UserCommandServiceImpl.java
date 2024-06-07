@@ -1,15 +1,18 @@
 package com.acme.fromzeroapi.auth.application.internal.commandservices;
 
+import com.acme.fromzeroapi.auth.application.internal.outboundservices.hashing.HashingService;
 import com.acme.fromzeroapi.auth.domain.model.aggregates.Developer;
 import com.acme.fromzeroapi.auth.domain.model.aggregates.Enterprise;
 import com.acme.fromzeroapi.auth.domain.model.aggregates.User;
 import com.acme.fromzeroapi.auth.domain.model.commands.CreateUserCommand;
+import com.acme.fromzeroapi.auth.domain.model.commands.SignInCommand;
 import com.acme.fromzeroapi.auth.domain.model.commands.SignUpDeveloperCommand;
 import com.acme.fromzeroapi.auth.domain.model.commands.SignUpEnterpriseCommand;
 import com.acme.fromzeroapi.auth.domain.services.UserCommandService;
 import com.acme.fromzeroapi.auth.infraestructure.persistence.jpa.repositories.DeveloperRepository;
 import com.acme.fromzeroapi.auth.infraestructure.persistence.jpa.repositories.EnterpriseRepository;
 import com.acme.fromzeroapi.auth.infraestructure.persistence.jpa.repositories.UserRepository;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -20,10 +23,13 @@ public class UserCommandServiceImpl implements UserCommandService {
     private final DeveloperRepository developerRepository;
     private final EnterpriseRepository enterpriseRepository;
 
-    public UserCommandServiceImpl(UserRepository userRepository, DeveloperRepository developerRepository, EnterpriseRepository enterpriseRepository) {
+    private final HashingService hashingService;
+
+    public UserCommandServiceImpl(UserRepository userRepository, DeveloperRepository developerRepository, EnterpriseRepository enterpriseRepository, HashingService hashingService) {
         this.userRepository = userRepository;
         this.developerRepository = developerRepository;
         this.enterpriseRepository = enterpriseRepository;
+        this.hashingService = hashingService;
     }
 
     @Override
@@ -35,7 +41,7 @@ public class UserCommandServiceImpl implements UserCommandService {
 
         User user = new User(new CreateUserCommand(
                 email,
-                command.createUserCommand().password(),
+                hashingService.encode(command.createUserCommand().password()),
                 command.createUserCommand().userType()
         ));
         userRepository.save(user);
@@ -65,7 +71,7 @@ public class UserCommandServiceImpl implements UserCommandService {
 
         User user = new User(new CreateUserCommand(
                 email,
-                command.createUserCommand().password(),
+                hashingService.encode(command.createUserCommand().password()),
                 command.createUserCommand().userType()
         ));
         userRepository.save(user);
@@ -84,6 +90,18 @@ public class UserCommandServiceImpl implements UserCommandService {
         enterpriseRepository.save(enterprise);
 
         return Optional.of(user);
+    }
+
+    @Override
+    public Optional<ImmutablePair<User, String>> handle(SignInCommand command) {
+        var user = userRepository.findByEmail(command.email());
+        if (user.isEmpty()) {
+            throw new IllegalArgumentException("User not found");
+        }
+        if (!hashingService.matches(command.password(), user.get().getPassword())) {
+            throw new IllegalArgumentException("Invalid password");
+        }
+        return Optional.of(ImmutablePair.of(user.get(), "token"));
     }
 }
 
