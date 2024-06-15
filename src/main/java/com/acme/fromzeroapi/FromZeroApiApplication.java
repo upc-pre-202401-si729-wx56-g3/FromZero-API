@@ -38,15 +38,39 @@ public class FromZeroApiApplication {
 		};
 	}
 
-    @Bean
+	/*@Bean
+	CommandLineRunner runner(UserRepository userRepository,
+							 DeveloperRepository developerRepository,
+							 EnterpriseRepository enterpriseRepository,
+							 ProgrammingLanguagesRepository languagesRepository,
+							 FrameworksRepository frameworksRepository){
+		return (String... args)->{
+			List<ProgrammingLanguage> languageList=Arrays.asList(
+					new ProgrammingLanguage("Javascript"),
+					new ProgrammingLanguage("Typescript"),
+					new ProgrammingLanguage("HTML"),
+					new ProgrammingLanguage("CSS")
+			);
+			List<Framework> frameworksList = Arrays.asList(
+					new Framework("Vue Js"),
+					new Framework("Angular"),
+					new Framework("React")
+			);
+			languagesRepository.saveAll(languageList);
+			frameworksRepository.saveAll(frameworksList);
+		};
+	}*/
+
+
+    /*@Bean
     CommandLineRunner runner(UserRepository userRepository,
 							 DeveloperRepository developerRepository,
 							 EnterpriseRepository enterpriseRepository,
 							 ProgrammingLanguagesRepository languagesRepository,
 							 FrameworksRepository frameworksRepository){
         return (String... args)->{
-            User user1 = new User("usuario1@gmail.com","contrasena1","D");
-            User user2 = new User("usuario1@gmail.com","contrasena1","E");
+            *//*User user1 = new User("usuario1@gmail.com","contrasena1","D");
+            User user2 = new User("usuario2@gmail.com","contrasena2","E");
             userRepository.save(user1);
             userRepository.save(user2);
             Developer dev1 = new Developer(user1, "Jose","Vasquez","descripcion 1","Peru","999999999",0,
@@ -54,7 +78,7 @@ public class FromZeroApiApplication {
 			Enterprise emp1 = new Enterprise(user2,"geekit","geekit description","Peru","947921342","999999991",
 					"website","https://cdn-icons-png.flaticon.com/512/3237/3237472.png","sector 1");
 			developerRepository.save(dev1);
-			enterpriseRepository.save(emp1);
+			enterpriseRepository.save(emp1);*//*
 
 
 			List<ProgrammingLanguage> languageList=Arrays.asList(
@@ -71,7 +95,7 @@ public class FromZeroApiApplication {
 			languagesRepository.saveAll(languageList);
 			frameworksRepository.saveAll(frameworksList);
         };
-    }
+    }*/
 	//borrar luego
 	/*@Bean
 	CommandLineRunner runner(EnterpriseRepository enterpriseRepository,

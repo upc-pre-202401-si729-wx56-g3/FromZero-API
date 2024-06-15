@@ -6,6 +6,9 @@ import com.acme.fromzeroapi.deliverables.domain.services.DeliverableCommandServi
 import com.acme.fromzeroapi.deliverables.infrastructure.persistence.jpa.repositories.DeliverableRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -20,6 +23,17 @@ public class DeliverableCommandServiceImpl implements DeliverableCommandService 
         var deliverable = new Deliverable(command);
         this.deliverableRepository.save(deliverable);
         return Optional.of(deliverable);
+    }
+
+    @Override
+    public void handle(List<CreateDeliverableCommand> commands) {
+        //List<Deliverable> deliverablesList  = new ArrayList<>();
+        commands.forEach(command -> {
+            Optional<Deliverable> deliverable = this.handle(command);
+            if(deliverable.isEmpty())throw new IllegalArgumentException();
+            this.deliverableRepository.save(deliverable.get());
+        });
+
     }
 
 }

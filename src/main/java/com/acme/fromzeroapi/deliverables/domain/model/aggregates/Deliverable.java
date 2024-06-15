@@ -1,13 +1,14 @@
 package com.acme.fromzeroapi.deliverables.domain.model.aggregates;
 
 import com.acme.fromzeroapi.deliverables.domain.model.commands.CreateDeliverableCommand;
-import com.acme.fromzeroapi.project_branch_deliverables.domain.model.aggregates.Project;
-import com.fasterxml.jackson.annotation.JsonFormat;
+//import com.acme.fromzeroapi.project_branch_deliverables.domain.model.aggregates.Project;
+//import com.fasterxml.jackson.annotation.JsonFormat;
+import com.acme.fromzeroapi.projects.domain.model.aggregates.Project;
 import jakarta.persistence.*;
 import lombok.Getter;
 
 import java.time.LocalDate;
-import java.util.Date;
+//import java.util.Date;
 
 @Getter
 @Entity

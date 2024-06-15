@@ -20,7 +20,8 @@ public class WebSecurityConfiguration{
                                 "/swagger-ui/**",
                                 "/v1/api/auth/**",
                                 "/swagger-resources/**",
-                                "/webjars/**").permitAll()
+                                "/webjars/**",
+                                "/v1/api/**").permitAll()
                         .anyRequest().authenticated());
         return http.build();
     }
