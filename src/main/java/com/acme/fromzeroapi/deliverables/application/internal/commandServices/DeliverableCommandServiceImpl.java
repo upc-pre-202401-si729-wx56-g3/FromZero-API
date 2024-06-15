@@ -2,6 +2,8 @@ package com.acme.fromzeroapi.deliverables.application.internal.commandServices;
 
 import com.acme.fromzeroapi.deliverables.domain.model.aggregates.Deliverable;
 import com.acme.fromzeroapi.deliverables.domain.model.commands.CreateDeliverableCommand;
+import com.acme.fromzeroapi.deliverables.domain.model.commands.UpdateDeliverableStatusCommand;
+import com.acme.fromzeroapi.deliverables.domain.model.commands.UpdateDeveloperMessageCommand;
 import com.acme.fromzeroapi.deliverables.domain.services.DeliverableCommandService;
 import com.acme.fromzeroapi.deliverables.infrastructure.persistence.jpa.repositories.DeliverableRepository;
 import org.springframework.stereotype.Service;
@@ -33,6 +35,36 @@ public class DeliverableCommandServiceImpl implements DeliverableCommandService 
             if(deliverable.isEmpty())throw new IllegalArgumentException();
             this.deliverableRepository.save(deliverable.get());
         });
+
+    }
+
+    @Override
+    public Optional<Deliverable> handle(UpdateDeveloperMessageCommand command) {
+        try {
+            var deliverable = this.deliverableRepository.findById(command.deliverableId());
+            if(deliverable.isEmpty())throw new IllegalArgumentException();
+            deliverable.get().setDeveloperMessage(command.message());
+            deliverable.get().setState("Awaiting Review");
+            this.deliverableRepository.save(deliverable.get());
+            return deliverable;
+        }catch (IllegalArgumentException e){
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public Optional<Deliverable> handle(UpdateDeliverableStatusCommand command) {
+        try {
+            var deliverable = this.deliverableRepository.findById(command.deliverableId());
+            if(deliverable.isEmpty())throw new IllegalArgumentException();
+            if (command.accepted()){
+                deliverable.get().setState("Completed");
+            }else deliverable.get().setState("Rejected");
+            this.deliverableRepository.save(deliverable.get());
+            return deliverable;
+        }catch (IllegalArgumentException e){
+            return Optional.empty();
+        }
 
     }
 
