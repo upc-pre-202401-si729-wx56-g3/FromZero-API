@@ -1,5 +1,6 @@
 package com.acme.fromzeroapi.projects.interfaces.rest;
 
+import com.acme.fromzeroapi.deliverables.interfaces.acl.DeliverableContextFacade;
 import com.acme.fromzeroapi.developer_branch_projects.interfaces.acl.DeveloperContextFacade;
 import com.acme.fromzeroapi.enterprise_branch_projects.interfaces.acl.EnterpriseContextFacade;
 import com.acme.fromzeroapi.projects.domain.model.aggregates.Framework;
@@ -42,19 +43,22 @@ public class ProjectController {
     private final DeveloperContextFacade developerContextFacade;
     private final ProgrammingLanguagesQueryService programmingLanguagesQueryService;
     private final FrameworksQueryService frameworksQueryService;
+    private final DeliverableContextFacade deliverableContextFacade;
 
     public ProjectController(ProjectCommandService projectCommandService,
                              EnterpriseContextFacade enterpriseContextFacade,
                              ProjectQueryService projectQueryService,
                              DeveloperContextFacade developerContextFacade,
                              ProgrammingLanguagesQueryService programmingLanguagesQueryService,
-                             FrameworksQueryService frameworksQueryService) {
+                             FrameworksQueryService frameworksQueryService,
+                             DeliverableContextFacade deliverableContextFacade) {
         this.projectCommandService = projectCommandService;
         this.enterpriseContextFacade = enterpriseContextFacade;
         this.projectQueryService = projectQueryService;
         this.developerContextFacade = developerContextFacade;
         this.programmingLanguagesQueryService = programmingLanguagesQueryService;
         this.frameworksQueryService = frameworksQueryService;
+        this.deliverableContextFacade = deliverableContextFacade;
     }
 
     public List<ProgrammingLanguage> getProgrammingLanguages(List<Integer>languages) {
@@ -102,8 +106,10 @@ public class ProjectController {
                 programmingLanguages,frameworks,resource.type(),resource.budget(),resource.methodologies());
         var project = this.projectCommandService.handle(createProjectCommand);
         if (project.isEmpty()) return ResponseEntity.badRequest().build();
-
         var createProjectResource = CreateProjectResourceFromEntityAssembler.toResourceFromEntity(project.get());
+
+        this.deliverableContextFacade.createDeliverables(project.get());
+
         return new ResponseEntity<>(createProjectResource, HttpStatus.CREATED);
     }
 
