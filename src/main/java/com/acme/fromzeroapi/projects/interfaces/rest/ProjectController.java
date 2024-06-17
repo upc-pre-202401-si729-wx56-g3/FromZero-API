@@ -187,7 +187,7 @@ public class ProjectController {
     }
 
     @Operation(summary = "Get All Projects By Developer Id")
-    @GetMapping(value = "developer/{developerId}")
+    @GetMapping(value = "/developer/{developerId}")
     public ResponseEntity<List<ProjectResource>> getAllProjectsByDeveloperId(@PathVariable Long developerId){
         //get developer con el facade
         var developer = this.developerContextFacade.getDeveloperById(developerId);
@@ -199,4 +199,18 @@ public class ProjectController {
                 .collect(Collectors.toList());
         return ResponseEntity.ok(projectsResources);
     }
+
+    @Operation(summary = "Get All Projects By Enterprise Id")
+    @GetMapping(value = "/enterprise/{enterpriseId}")
+    public ResponseEntity<List<ProjectResource>> getAllProjectsByEnterpriseId(@PathVariable Long enterpriseId){
+        var enterprise = this.enterpriseContextFacade.getEnterpriseById(enterpriseId);
+        if(enterprise==null) return ResponseEntity.badRequest().build();
+        var getProjectsByEnterpriseIdQuery = new GetAllProjectsByEnterpriseIdQuery(enterprise);
+        var projects =this.projectQueryService.handle(getProjectsByEnterpriseIdQuery);
+        var projectResources = projects.stream()
+                .map(ProjectResourceFromEntityAssembler::toResourceFromEntity)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(projectResources);
+    }
+
 }

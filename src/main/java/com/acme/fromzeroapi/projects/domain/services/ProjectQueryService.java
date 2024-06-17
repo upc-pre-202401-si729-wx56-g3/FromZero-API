@@ -12,4 +12,5 @@ public interface ProjectQueryService {
     List<Project>handle(GetAllProjectsByStateQuery query);
     Optional<Project> handle(GetProjectByIdQuery query);
     List<Project> handle(GetAllProjectsByDeveloperIdQuery query);
+    List<Project> handle(GetAllProjectsByEnterpriseIdQuery query);
 }

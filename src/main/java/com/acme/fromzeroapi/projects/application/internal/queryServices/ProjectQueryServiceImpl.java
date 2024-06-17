@@ -36,4 +36,9 @@ public class ProjectQueryServiceImpl implements ProjectQueryService {
     public List<Project> handle(GetAllProjectsByDeveloperIdQuery query) {
         return this.projectRepository.findAllByDeveloper(query.developer());
     }
+
+    @Override
+    public List<Project> handle(GetAllProjectsByEnterpriseIdQuery query) {
+        return this.projectRepository.findAllByEnterprise(query.enterprise());
+    }
 }
