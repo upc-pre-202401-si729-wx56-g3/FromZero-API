@@ -2,17 +2,15 @@ package com.acme.fromzeroapi.projects.domain.model.aggregates;
 
 /*import com.acme.fromzeroapi.developer_branch_projects.domain.model.aggregates.Developer;
 import com.acme.fromzeroapi.enterprise_branch_projects.domain.model.aggregates.Enterprise;*/
-import com.acme.fromzeroapi.auth.domain.model.aggregates.Developer;
-import com.acme.fromzeroapi.auth.domain.model.aggregates.Enterprise;
+import com.acme.fromzeroapi.usermanagement.domain.model.aggregates.Developer;
+import com.acme.fromzeroapi.usermanagement.domain.model.aggregates.Enterprise;
 import com.acme.fromzeroapi.projects.domain.model.commands.CreateProjectCommand;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Getter

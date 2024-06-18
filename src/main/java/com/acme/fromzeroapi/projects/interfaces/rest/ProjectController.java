@@ -1,6 +1,6 @@
 package com.acme.fromzeroapi.projects.interfaces.rest;
 
-import com.acme.fromzeroapi.auth.interfaces.acl.ProfileContextFacade;
+import com.acme.fromzeroapi.usermanagement.interfaces.acl.ProfileContextFacade;
 import com.acme.fromzeroapi.deliverables.interfaces.acl.DeliverableContextFacade;
 import com.acme.fromzeroapi.projects.domain.model.aggregates.Framework;
 import com.acme.fromzeroapi.projects.domain.model.aggregates.ProgrammingLanguage;
