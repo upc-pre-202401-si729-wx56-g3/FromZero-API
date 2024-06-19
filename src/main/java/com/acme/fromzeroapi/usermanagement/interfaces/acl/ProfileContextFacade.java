@@ -5,7 +5,7 @@ import com.acme.fromzeroapi.usermanagement.domain.model.aggregates.Enterprise;
 import com.acme.fromzeroapi.usermanagement.domain.model.queries.GetDeveloperByUserIdAsyncQuery;
 import com.acme.fromzeroapi.usermanagement.domain.model.queries.GetEnterpriseByUserIdAsyncQuery;
 import com.acme.fromzeroapi.usermanagement.domain.services.ProfileQueryService;
-import com.acme.fromzeroapi.developer_branch_projects.domain.model.queries.GetDeveloperByIdQuery;
+//import com.acme.fromzeroapi.developer_branch_projects.domain.model.queries.GetDeveloperByIdQuery;
 import org.springframework.stereotype.Service;
 
 @Service
