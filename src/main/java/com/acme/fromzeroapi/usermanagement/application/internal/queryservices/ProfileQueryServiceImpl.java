@@ -4,6 +4,7 @@ import com.acme.fromzeroapi.usermanagement.domain.model.aggregates.Developer;
 import com.acme.fromzeroapi.usermanagement.domain.model.aggregates.Enterprise;
 import com.acme.fromzeroapi.usermanagement.domain.model.queries.GetAllDevelopersAsyncQuery;
 import com.acme.fromzeroapi.usermanagement.domain.model.queries.GetDeveloperByUserIdAsyncQuery;
+import com.acme.fromzeroapi.usermanagement.domain.model.queries.GetEnterpriseByIdQuery;
 import com.acme.fromzeroapi.usermanagement.domain.model.queries.GetEnterpriseByUserIdAsyncQuery;
 import com.acme.fromzeroapi.usermanagement.domain.services.ProfileQueryService;
 import com.acme.fromzeroapi.usermanagement.infraestructure.persistence.jpa.repositories.DeveloperRepository;
@@ -36,5 +37,10 @@ public class ProfileQueryServiceImpl implements ProfileQueryService {
     @Override
     public Optional<Enterprise> handle(GetEnterpriseByUserIdAsyncQuery query) {
         return enterpriseRepository.findEnterpriseByUserUserId(query.id());
+    }
+
+    @Override
+    public Optional<Enterprise> handle(GetEnterpriseByIdQuery query) {
+        return this.enterpriseRepository.findById(query.enterpriseId());
     }
 }

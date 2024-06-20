@@ -4,6 +4,7 @@ import com.acme.fromzeroapi.usermanagement.domain.model.aggregates.Developer;
 import com.acme.fromzeroapi.usermanagement.domain.model.aggregates.Enterprise;
 import com.acme.fromzeroapi.usermanagement.domain.model.queries.GetAllDevelopersAsyncQuery;
 import com.acme.fromzeroapi.usermanagement.domain.model.queries.GetDeveloperByUserIdAsyncQuery;
+import com.acme.fromzeroapi.usermanagement.domain.model.queries.GetEnterpriseByIdQuery;
 import com.acme.fromzeroapi.usermanagement.domain.model.queries.GetEnterpriseByUserIdAsyncQuery;
 import com.acme.fromzeroapi.usermanagement.domain.services.ProfileQueryService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -43,6 +44,14 @@ public class ProfileController {
     public ResponseEntity<Enterprise> getEnterpriseById(@PathVariable Long userId) {
         var getEnterpriseByUserID = new GetEnterpriseByUserIdAsyncQuery(userId);
         var enterprise = profileQueryService.handle(getEnterpriseByUserID);
+        if (enterprise.isEmpty()) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(enterprise.get());
+    }
+
+    @GetMapping("/enterprise/{enterpriseId}")
+    public ResponseEntity<Enterprise> getEnterprise(@PathVariable Long enterpriseId){
+        var getEnterpriseByIdQuery = new GetEnterpriseByIdQuery(enterpriseId);
+        var enterprise = profileQueryService.handle(getEnterpriseByIdQuery);
         if (enterprise.isEmpty()) return ResponseEntity.notFound().build();
         return ResponseEntity.ok(enterprise.get());
     }
