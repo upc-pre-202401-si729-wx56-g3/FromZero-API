@@ -6,6 +6,6 @@ import com.acme.fromzeroapi.message.interfaces.rest.resources.MessageResource;
 public class MessageResourceFromEntityAssembler {
 
     public static MessageResource toResourceFromEntity(Message entity) {
-        return new MessageResource(entity.getId(), entity.getSubject(), entity.getEmailBody(), entity.getRecipient(), entity.getSender(), entity.getCreationTime(), entity.getSentTime());
+        return new MessageResource(entity.getId(), entity.getSubject(), entity.getEmailBody(), entity.getRecipient(), entity.getSender(), entity.getSentTime());
     }
 }

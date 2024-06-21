@@ -1,9 +1,11 @@
 package com.acme.fromzeroapi.message.domain.model.aggregates;
 
 import com.acme.fromzeroapi.message.domain.model.commands.CreateMessageCommand;
+import com.acme.fromzeroapi.usermanagement.domain.model.aggregates.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Getter
@@ -20,25 +22,23 @@ public class Message {
     @Column(nullable = false)
     private String emailBody;
 
-    @Column(nullable = false)
-    private String recipient;
+    @ManyToOne
+    @JoinColumn(name = "recipient_id", nullable = false)
+    private User recipient;
+
+    @ManyToOne
+    @JoinColumn(name = "sender_id", nullable = false)
+    private User sender;
 
     @Column(nullable = false)
-    private String sender;
-
-    @Column(nullable = false)
-    private Date creationTime;
-
-    @Column(nullable = false)
-    private Date sentTime;
+    private LocalDate sentTime;
 
     public Message(CreateMessageCommand createMessageCommand) {
         this.subject = createMessageCommand.subject();
         this.emailBody = createMessageCommand.emailBody();
         this.recipient = createMessageCommand.recipient();
         this.sender = createMessageCommand.sender();
-        this.creationTime = new Date();
-        this.sentTime = new Date();
+        this.sentTime = LocalDate.now();
     }
 
     public Message() {}
