@@ -1,4 +1,4 @@
-package com.acme.fromzeroapi.shared.infraestructure.documentation.openapi.configuration;
+package com.acme.fromzeroapi.shared.infrastructure.documentation.openapi.configuration;
 
 import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
