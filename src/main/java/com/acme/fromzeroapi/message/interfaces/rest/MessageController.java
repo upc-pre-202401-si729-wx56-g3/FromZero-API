@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping(value ="/v1/api/message")
+@RequestMapping(value ="/v1/api/messages")
 @Tag(name = "Messages", description = "Messages management endpoint")
 public class MessageController {
 

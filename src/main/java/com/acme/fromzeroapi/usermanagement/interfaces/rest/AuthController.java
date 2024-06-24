@@ -1,5 +1,6 @@
 package com.acme.fromzeroapi.usermanagement.interfaces.rest;
 
+import com.acme.fromzeroapi.usermanagement.domain.model.queries.GetUserByEmailQuery;
 import com.acme.fromzeroapi.usermanagement.domain.services.UserCommandService;
 import com.acme.fromzeroapi.usermanagement.domain.services.UserQueryService;
 import com.acme.fromzeroapi.usermanagement.interfaces.rest.resources.*;
@@ -18,11 +19,11 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Auth", description = "Operations related to users")
 public class AuthController {
     private final UserCommandService userCommandService;
-//  private final UserQueryService userQueryService;
+    private final UserQueryService userQueryService;
 
     public AuthController(UserCommandService userCommandService, UserQueryService userQueryService) {
         this.userCommandService = userCommandService;
-        //this.userQueryService = userQueryService;
+        this.userQueryService = userQueryService;
     }
 
 //    @Operation(summary = "Get all users")
@@ -37,13 +38,15 @@ public class AuthController {
 //                .map(ResponseEntity::ok)
 //                .orElse(ResponseEntity.notFound().build());
 //    }
-//    @Operation(summary = "Get user by email")
-//    @GetMapping("/email/{email}")
-//    public ResponseEntity<User> getUserByEmail(@PathVariable String email) {
-//        return userQueryService.handle(new GetUserByEmailQuery(email))
-//                .map(ResponseEntity::ok)
-//                .orElse(ResponseEntity.notFound().build());
-//    }
+    @Operation(summary = "Get user by email")
+    @GetMapping("/email/{email}")
+    public ResponseEntity<UserResource> getUserByEmail(@PathVariable String email) {
+        var getUserByEmailQuery=new GetUserByEmailQuery(email);
+        var user = this.userQueryService.handle(getUserByEmailQuery);
+        if(user.isEmpty())return ResponseEntity.notFound().build();
+        var resource = UserResourceFromEntityAssembler.toResourceFromEntity(user.get());
+        return ResponseEntity.ok(resource);
+    }
 
     @Operation(summary = "Create Developer")
     @PostMapping("/register-developer")

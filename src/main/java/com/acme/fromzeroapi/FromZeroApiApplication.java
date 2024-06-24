@@ -32,7 +32,7 @@ public class FromZeroApiApplication {
 		};
 	}
 
-	@Bean
+	/*@Bean
 	CommandLineRunner runner(ProgrammingLanguagesRepository languagesRepository,
 							 FrameworksRepository frameworksRepository){
 		return (String... args)->{
@@ -50,5 +50,5 @@ public class FromZeroApiApplication {
 			languagesRepository.saveAll(languageList);
 			frameworksRepository.saveAll(frameworksList);
 		};
-	}
+	}*/
 }
