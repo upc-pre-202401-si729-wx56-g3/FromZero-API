@@ -19,7 +19,8 @@ public class Message {
     @Column(nullable = false)
     private String subject;
 
-    @Column(nullable = false)
+    @Lob
+    @Column(nullable = false,columnDefinition = "TEXT")
     private String emailBody;
 
     @ManyToOne
