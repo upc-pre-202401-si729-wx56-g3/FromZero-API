@@ -3,6 +3,7 @@ package com.acme.fromzeroapi.support.interfaces.rest;
 import com.acme.fromzeroapi.projects.domain.model.queries.GetAllProjectsQuery;
 import com.acme.fromzeroapi.support.domain.model.aggregates.SupportTicket;
 import com.acme.fromzeroapi.support.domain.model.query.GetAllSupportTicketQuery;
+import com.acme.fromzeroapi.support.domain.model.query.GetSupportTicketByIdQuery;
 import com.acme.fromzeroapi.support.domain.services.SupportTicketCommandService;
 import com.acme.fromzeroapi.support.domain.services.SupportTicketQueryService;
 import com.acme.fromzeroapi.support.interfaces.rest.resources.CreateSupportTicketResource;
@@ -59,5 +60,17 @@ public class SupportTicketController {
                 .map(SupportTicketResourceFromEntityAssembler::toResourceFromEntity)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(supportTicketsResource);
+    }
+
+    @Operation(summary = "Get support ticket by id")
+    @GetMapping(value= "/{id}")
+    public ResponseEntity<SupportTicketResource> getSupportTicketById(@PathVariable Long id){
+        var getSupportTicketByIdQuery = new GetSupportTicketByIdQuery(id);
+        var supportTicket = this.supportTicketQueryService.handle(getSupportTicketByIdQuery);
+        if(supportTicket.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
+        var supportTicketResource = SupportTicketResourceFromEntityAssembler.toResourceFromEntity(supportTicket.get());
+        return ResponseEntity.ok(supportTicketResource);
     }
 }
