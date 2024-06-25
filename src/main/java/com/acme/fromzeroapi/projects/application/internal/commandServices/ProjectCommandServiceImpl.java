@@ -50,9 +50,10 @@ public class ProjectCommandServiceImpl implements ProjectCommandService {
     }
 
     @Override
-    public void handle(UpdateProjectProgressCommand command) {
+    public Optional<Project> handle(UpdateProjectProgressCommand command) {
         var project = command.project();
         project.setProgress(command.progress());
         this.projectRepository.save(project);
+        return Optional.of(project);
     }
 }

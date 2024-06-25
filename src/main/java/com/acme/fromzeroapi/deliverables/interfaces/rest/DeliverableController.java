@@ -16,6 +16,7 @@ import com.acme.fromzeroapi.deliverables.interfaces.rest.transform.CreateDeliver
 import com.acme.fromzeroapi.deliverables.interfaces.rest.transform.DeliverableResourceFromEntityAssembler;
 //import com.acme.fromzeroapi.project_branch_deliverables.interfaces.acl.ProjectContextFacade;
 import com.acme.fromzeroapi.projects.interfaces.acl.ProjectContextFacade;
+import com.acme.fromzeroapi.usermanagement.interfaces.acl.ProfileContextFacade;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
@@ -34,13 +35,16 @@ public class DeliverableController {
     private final DeliverableCommandService deliverableCommandService;
     private final ProjectContextFacade projectContextFacade;
     private final DeliverableQueryService deliverableQueryService;
+    private final ProfileContextFacade profileContextFacade;
 
     public DeliverableController(DeliverableCommandService deliverableCommandService,
                                  ProjectContextFacade projectContextFacade,
-                                 DeliverableQueryService deliverableQueryService) {
+                                 DeliverableQueryService deliverableQueryService,
+                                 ProfileContextFacade profileContextFacade) {
         this.deliverableCommandService = deliverableCommandService;
         this.projectContextFacade = projectContextFacade;
         this.deliverableQueryService = deliverableQueryService;
+        this.profileContextFacade = profileContextFacade;
     }
 
     @Operation(summary = "Create deliverable")
@@ -116,8 +120,12 @@ public class DeliverableController {
             var getCompletedDeliverablesQuery = new GetCompletedDeliverablesQuery(deliverables);
             var completedDeliverables = deliverableQueryService.handle(getCompletedDeliverablesQuery);
             var totalDeliverables = deliverables.size();
-            this.projectContextFacade.updateProjectProgress(deliverable.get().getProject().getId()
+            var updatedProject = this.projectContextFacade.updateProjectProgress(deliverable.get().getProject().getId()
                     , completedDeliverables, totalDeliverables);
+            if(updatedProject==null)return ResponseEntity.internalServerError().build();
+            if(updatedProject.getProgress()==100.0){
+                this.profileContextFacade.updateDeveloperCompletedProjects(updatedProject.getDeveloper().getId());
+            }
         }
 
         var deliverableResource = DeliverableResourceFromEntityAssembler.toResourceFromEntity(deliverable.get());

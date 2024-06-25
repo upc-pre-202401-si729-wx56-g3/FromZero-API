@@ -3,6 +3,7 @@ package com.acme.fromzeroapi.usermanagement.domain.model.aggregates;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Entity
@@ -20,6 +21,7 @@ public class Developer {
     private String description = "No description provided.";
     private String country = "No country provided.";
     private String phone = "999 999 999";
+    @Setter
     private int completedProjects = 0;
     private String specialties = "No specialties provided.";
     private String profileImgUrl = "https://cdn-icons-png.flaticon.com/512/3237/3237472.png";
