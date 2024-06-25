@@ -5,6 +5,7 @@ package com.acme.fromzeroapi.deliverables.interfaces.rest;
 import com.acme.fromzeroapi.deliverables.domain.model.commands.UpdateDeliverableStatusCommand;
 import com.acme.fromzeroapi.deliverables.domain.model.commands.UpdateDeveloperMessageCommand;
 import com.acme.fromzeroapi.deliverables.domain.model.queries.GetAllDeliverablesByProjectIdQuery;
+import com.acme.fromzeroapi.deliverables.domain.model.queries.GetCompletedDeliverablesQuery;
 import com.acme.fromzeroapi.deliverables.domain.model.queries.GetDeliverableByIdQuery;
 import com.acme.fromzeroapi.deliverables.domain.services.DeliverableCommandService;
 import com.acme.fromzeroapi.deliverables.domain.services.DeliverableQueryService;
@@ -31,7 +32,6 @@ import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 @Tag(name = "Deliverables", description = "Deliverables Management Endpoints")
 public class DeliverableController {
     private final DeliverableCommandService deliverableCommandService;
-    //private final ProjectContextFacade projectContextFacade;
     private final ProjectContextFacade projectContextFacade;
     private final DeliverableQueryService deliverableQueryService;
 
@@ -51,13 +51,20 @@ public class DeliverableController {
             return ResponseEntity.badRequest().build();
         }
         var createDeliverableCommand = CreateDeliverableCommandFromResourceAssembler.toCommandFromResource(resource,project);
-        //var createDeliverableCommand = new CreateDeliverableCommand(resource.name(), resource.description(), resource.date(), project);
         var deliverable = this.deliverableCommandService.handle(createDeliverableCommand);
         if (deliverable.isEmpty()) {
             return ResponseEntity.internalServerError().build();
         }
+
+        var getAllDeliverablesByProjectId = new GetAllDeliverablesByProjectIdQuery(deliverable.get().getProject());
+        var deliverables = this.deliverableQueryService.handle(getAllDeliverablesByProjectId);
+        var getCompletedDeliverablesQuery = new GetCompletedDeliverablesQuery(deliverables);
+        var completedDeliverables = deliverableQueryService.handle(getCompletedDeliverablesQuery);
+        var totalDeliverables = deliverables.size();
+        this.projectContextFacade.updateProjectProgress(deliverable.get().getProject().getId()
+                , completedDeliverables, totalDeliverables);
+
         var deliverableResource = DeliverableResourceFromEntityAssembler.toResourceFromEntity(deliverable.get());
-        //var createdDeliverableResource = CreateDeliverableResourceFromEntityAssembler.toResourceFromEntity(deliverable.get());
         return new  ResponseEntity<>(deliverableResource, HttpStatus.CREATED);
     }
 
@@ -102,6 +109,17 @@ public class DeliverableController {
         var updateDeliverableStatusCommand = new UpdateDeliverableStatusCommand(deliverableId,accepted);
         var deliverable = this.deliverableCommandService.handle(updateDeliverableStatusCommand);
         if (deliverable.isEmpty())return ResponseEntity.badRequest().build();
+
+        if("Completed".equals(deliverable.get().getState())) {
+            var getAllDeliverablesByProjectId = new GetAllDeliverablesByProjectIdQuery(deliverable.get().getProject());
+            var deliverables = this.deliverableQueryService.handle(getAllDeliverablesByProjectId);
+            var getCompletedDeliverablesQuery = new GetCompletedDeliverablesQuery(deliverables);
+            var completedDeliverables = deliverableQueryService.handle(getCompletedDeliverablesQuery);
+            var totalDeliverables = deliverables.size();
+            this.projectContextFacade.updateProjectProgress(deliverable.get().getProject().getId()
+                    , completedDeliverables, totalDeliverables);
+        }
+
         var deliverableResource = DeliverableResourceFromEntityAssembler.toResourceFromEntity(deliverable.get());
         return ResponseEntity.ok(deliverableResource);
     }

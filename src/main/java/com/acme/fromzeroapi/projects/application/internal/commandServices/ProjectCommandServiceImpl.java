@@ -5,6 +5,7 @@ import com.acme.fromzeroapi.projects.domain.model.aggregates.Project;
 import com.acme.fromzeroapi.projects.domain.model.commands.AssignProjectDeveloperCommand;
 import com.acme.fromzeroapi.projects.domain.model.commands.CreateProjectCommand;
 import com.acme.fromzeroapi.projects.domain.model.commands.UpdateProjectCandidatesListCommand;
+import com.acme.fromzeroapi.projects.domain.model.commands.UpdateProjectProgressCommand;
 import com.acme.fromzeroapi.projects.domain.services.ProjectCommandService;
 import com.acme.fromzeroapi.projects.infrastructure.persistence.jpa.repositories.ProjectRepository;
 import org.springframework.stereotype.Service;
@@ -46,5 +47,12 @@ public class ProjectCommandServiceImpl implements ProjectCommandService {
         project.setState("En progreso");
         this.projectRepository.save(project);
         return Optional.of(project);
+    }
+
+    @Override
+    public void handle(UpdateProjectProgressCommand command) {
+        var project = command.project();
+        project.setProgress(command.progress());
+        this.projectRepository.save(project);
     }
 }

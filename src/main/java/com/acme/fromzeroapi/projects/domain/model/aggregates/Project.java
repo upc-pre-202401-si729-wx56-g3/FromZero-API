@@ -30,6 +30,7 @@ public class Project {
     @Setter
     private String state;
 
+    @Setter
     private Double progress;
 
     @ManyToOne

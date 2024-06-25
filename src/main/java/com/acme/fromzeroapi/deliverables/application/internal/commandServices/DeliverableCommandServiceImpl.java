@@ -24,6 +24,7 @@ public class DeliverableCommandServiceImpl implements DeliverableCommandService 
     public Optional<Deliverable> handle(CreateDeliverableCommand command) {
         var deliverable = new Deliverable(command);
         this.deliverableRepository.save(deliverable);
+
         return Optional.of(deliverable);
     }
 
@@ -59,6 +60,7 @@ public class DeliverableCommandServiceImpl implements DeliverableCommandService 
             if(deliverable.isEmpty())throw new IllegalArgumentException();
             if (command.accepted()){
                 deliverable.get().setState("Completed");
+                //System.out.println("El proyecto es: "+deliverable.get().getProject().getProgress().toString());
             }else deliverable.get().setState("Rejected");
             this.deliverableRepository.save(deliverable.get());
             return deliverable;
@@ -67,5 +69,4 @@ public class DeliverableCommandServiceImpl implements DeliverableCommandService 
         }
 
     }
-
 }
