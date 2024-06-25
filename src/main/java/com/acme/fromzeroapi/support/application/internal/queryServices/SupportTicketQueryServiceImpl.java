@@ -1,7 +1,7 @@
 package com.acme.fromzeroapi.support.application.internal.queryServices;
 
 import com.acme.fromzeroapi.support.domain.model.aggregates.SupportTicket;
-import com.acme.fromzeroapi.support.domain.model.query.GetAllSupportTicket;
+import com.acme.fromzeroapi.support.domain.model.query.GetAllSupportTicketQuery;
 import com.acme.fromzeroapi.support.domain.model.query.GetSupportTicketByIdQuery;
 import com.acme.fromzeroapi.support.domain.services.SupportTicketQueryService;
 import com.acme.fromzeroapi.support.infrastructure.persistence.jpa.repositories.SupportTicketsRepository;
@@ -24,7 +24,7 @@ public class SupportTicketQueryServiceImpl implements SupportTicketQueryService 
     }
 
     @Override
-    public List<SupportTicket> handle(GetAllSupportTicket query) {
+    public List<SupportTicket> handle(GetAllSupportTicketQuery query) {
         return this.supportTicketsRepository.findAll();
     }
 }
