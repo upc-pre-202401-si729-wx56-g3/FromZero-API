@@ -37,4 +37,5 @@ public class SupportTicket {
         this.sender = createSupportTicketCommand.sender();
         this.creationDate = LocalDate.now();
     }
+    public SupportTicket() {}
 }
