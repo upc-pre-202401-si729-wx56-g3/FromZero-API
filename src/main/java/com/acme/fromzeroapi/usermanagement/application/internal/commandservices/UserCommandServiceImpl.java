@@ -4,10 +4,7 @@ import com.acme.fromzeroapi.usermanagement.application.internal.outboundservices
 import com.acme.fromzeroapi.usermanagement.domain.model.aggregates.Developer;
 import com.acme.fromzeroapi.usermanagement.domain.model.aggregates.Enterprise;
 import com.acme.fromzeroapi.usermanagement.domain.model.aggregates.User;
-import com.acme.fromzeroapi.usermanagement.domain.model.commands.CreateUserCommand;
-import com.acme.fromzeroapi.usermanagement.domain.model.commands.SignInCommand;
-import com.acme.fromzeroapi.usermanagement.domain.model.commands.SignUpDeveloperCommand;
-import com.acme.fromzeroapi.usermanagement.domain.model.commands.SignUpEnterpriseCommand;
+import com.acme.fromzeroapi.usermanagement.domain.model.commands.*;
 import com.acme.fromzeroapi.usermanagement.domain.services.UserCommandService;
 import com.acme.fromzeroapi.usermanagement.infraestructure.persistence.jpa.repositories.DeveloperRepository;
 import com.acme.fromzeroapi.usermanagement.infraestructure.persistence.jpa.repositories.EnterpriseRepository;
@@ -88,6 +85,28 @@ public class UserCommandServiceImpl implements UserCommandService {
                 "No sector provided."
         );
         enterpriseRepository.save(enterprise);
+
+        return Optional.of(user);
+    }
+
+    @Override
+    public Optional<User> handle(SignUpSupportCommand command) {
+        String email = command.createUserCommand().email();
+
+        if (!email.equals("fromzero@support.com")) {
+            throw new IllegalArgumentException("Invalid email. Support accounts can only be created for 'fromzero@support.com'");
+        }
+
+        userRepository.findByEmail(email).ifPresent(user -> {
+            throw new IllegalArgumentException("User with email " + email + " already exists");
+        });
+
+        User user = new User(new CreateUserCommand(
+                email,
+                hashingService.encode(command.createUserCommand().password()),
+                command.createUserCommand().userType()
+        ));
+        userRepository.save(user);
 
         return Optional.of(user);
     }

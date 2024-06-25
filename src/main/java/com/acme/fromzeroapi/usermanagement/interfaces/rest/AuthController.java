@@ -4,10 +4,7 @@ import com.acme.fromzeroapi.usermanagement.domain.model.queries.GetUserByEmailQu
 import com.acme.fromzeroapi.usermanagement.domain.services.UserCommandService;
 import com.acme.fromzeroapi.usermanagement.domain.services.UserQueryService;
 import com.acme.fromzeroapi.usermanagement.interfaces.rest.resources.*;
-import com.acme.fromzeroapi.usermanagement.interfaces.rest.transform.AuthenticatedUsedResourcerFromEntityAssembler;
-import com.acme.fromzeroapi.usermanagement.interfaces.rest.transform.DeveloperCommandFromSignUpDeveloperResourceAssembler;
-import com.acme.fromzeroapi.usermanagement.interfaces.rest.transform.EnterpriseCommandFromSignUpEnterpriseResourceAssembler;
-import com.acme.fromzeroapi.usermanagement.interfaces.rest.transform.SignInCommandFromResourceAssembler;
+import com.acme.fromzeroapi.usermanagement.interfaces.rest.transform.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
@@ -72,7 +69,18 @@ public class AuthController {
         var userResource = UserResourceFromEntityAssembler.toResourceFromEntity(user.get());
         return new ResponseEntity<>(userResource, HttpStatus.CREATED);
     }
+    @Operation(summary = "Create Support")
+    @PostMapping("/register-support")
+    public ResponseEntity<UserResource> createSupport(@RequestBody SignUpSupportResource resource) {
+        var command = SupportCommandFromSignUpSupportResourceAssembler.toCommandFromResource(resource);
+        var user = userCommandService.handle(command);
 
+        if (user.isEmpty()){
+            return ResponseEntity.badRequest().build();
+        }
+        var userResource = UserResourceFromEntityAssembler.toResourceFromEntity(user.get());
+        return new ResponseEntity<>(userResource, HttpStatus.CREATED);
+    }
     @Operation(summary = "sign in")
     @PostMapping("/sign-in")
     public ResponseEntity<AuthenticateUserResource> signIn(@RequestBody SignInResource signInResource){
