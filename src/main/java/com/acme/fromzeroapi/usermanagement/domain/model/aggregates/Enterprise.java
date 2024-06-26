@@ -3,6 +3,7 @@ package com.acme.fromzeroapi.usermanagement.domain.model.aggregates;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Entity
@@ -12,14 +13,21 @@ public class Enterprise {
     private Long id;
 
     @NotBlank
+    @Setter
     private String enterpriseName;
-
+    @Setter
     private String description = "No description provided.";
+    @Setter
     private String country = "No country provided.";
+    @Setter
     private String ruc = "No RUC provided.";
+    @Setter
     private String phone = "No phone provided.";
+    @Setter
     private String website = "No website provided.";
+    @Setter
     private String profileImgUrl = "https://cdn-icons-png.flaticon.com/512/3237/3237472.png";
+    @Setter
     private String sector = "No sector provided.";
 
     @OneToOne

@@ -3,6 +3,7 @@ package com.acme.fromzeroapi.usermanagement.interfaces.rest;
 import com.acme.fromzeroapi.usermanagement.domain.model.aggregates.Developer;
 import com.acme.fromzeroapi.usermanagement.domain.model.aggregates.Enterprise;
 import com.acme.fromzeroapi.usermanagement.domain.model.commands.UpdateDeveloperProfileCommand;
+import com.acme.fromzeroapi.usermanagement.domain.model.commands.UpdateEnterpriseProfileCommand;
 import com.acme.fromzeroapi.usermanagement.domain.model.queries.GetAllDevelopersAsyncQuery;
 import com.acme.fromzeroapi.usermanagement.domain.model.queries.GetDeveloperByUserIdAsyncQuery;
 import com.acme.fromzeroapi.usermanagement.domain.model.queries.GetEnterpriseByIdQuery;
@@ -70,5 +71,17 @@ public class ProfileController {
         var updatedDeveloper = profileCommandService.handle(command);
 
         return ResponseEntity.ok(updatedDeveloper.get());
+    }
+
+    @Operation(summary = "Update enterprise profile")
+    @PutMapping("/enterprises/{id}")
+    public ResponseEntity<Enterprise> updateEnterpriseProfile(@PathVariable Long id, @RequestBody UpdateEnterpriseProfileCommand command) {
+
+        if (!id.equals(command.id())) {
+            throw new IllegalArgumentException("Path variable id doesn't match with request body id");
+        }
+        var updatedEnterprise = profileCommandService.handle(command);
+
+        return ResponseEntity.ok(updatedEnterprise.get());
     }
 }
