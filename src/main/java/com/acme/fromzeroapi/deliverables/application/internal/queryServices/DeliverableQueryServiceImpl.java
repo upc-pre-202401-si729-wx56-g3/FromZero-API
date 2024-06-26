@@ -2,6 +2,7 @@ package com.acme.fromzeroapi.deliverables.application.internal.queryServices;
 
 import com.acme.fromzeroapi.deliverables.domain.model.aggregates.Deliverable;
 import com.acme.fromzeroapi.deliverables.domain.model.queries.GetAllDeliverablesByProjectIdQuery;
+import com.acme.fromzeroapi.deliverables.domain.model.queries.GetCompletedDeliverablesQuery;
 import com.acme.fromzeroapi.deliverables.domain.model.queries.GetDeliverableByIdQuery;
 import com.acme.fromzeroapi.deliverables.domain.services.DeliverableQueryService;
 import com.acme.fromzeroapi.deliverables.infrastructure.persistence.jpa.repositories.DeliverableRepository;
@@ -26,5 +27,11 @@ public class DeliverableQueryServiceImpl implements DeliverableQueryService {
     @Override
     public Optional<Deliverable> handle(GetDeliverableByIdQuery query) {
         return this.deliverableRepository.findById(query.id());
+    }
+
+    @Override
+    public Long handle(GetCompletedDeliverablesQuery query) {
+        return query.deliverables().stream()
+                .filter(deliverable->"Completed".equals(deliverable.getState())).count();
     }
 }

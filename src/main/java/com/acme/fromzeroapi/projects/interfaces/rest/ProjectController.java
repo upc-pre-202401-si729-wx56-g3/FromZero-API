@@ -1,8 +1,7 @@
 package com.acme.fromzeroapi.projects.interfaces.rest;
 
+import com.acme.fromzeroapi.usermanagement.interfaces.acl.ProfileContextFacade;
 import com.acme.fromzeroapi.deliverables.interfaces.acl.DeliverableContextFacade;
-import com.acme.fromzeroapi.developer_branch_projects.interfaces.acl.DeveloperContextFacade;
-import com.acme.fromzeroapi.enterprise_branch_projects.interfaces.acl.EnterpriseContextFacade;
 import com.acme.fromzeroapi.projects.domain.model.aggregates.Framework;
 import com.acme.fromzeroapi.projects.domain.model.aggregates.ProgrammingLanguage;
 import com.acme.fromzeroapi.projects.domain.model.commands.AssignProjectDeveloperCommand;
@@ -38,27 +37,24 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @Tag(name = "Projects", description = "Projects Management Endpoints")
 public class ProjectController {
     private final ProjectCommandService projectCommandService;
-    private final EnterpriseContextFacade enterpriseContextFacade;
     private final ProjectQueryService projectQueryService;
-    private final DeveloperContextFacade developerContextFacade;
     private final ProgrammingLanguagesQueryService programmingLanguagesQueryService;
     private final FrameworksQueryService frameworksQueryService;
     private final DeliverableContextFacade deliverableContextFacade;
+    private final ProfileContextFacade profileContextFacade;
 
     public ProjectController(ProjectCommandService projectCommandService,
-                             EnterpriseContextFacade enterpriseContextFacade,
                              ProjectQueryService projectQueryService,
-                             DeveloperContextFacade developerContextFacade,
                              ProgrammingLanguagesQueryService programmingLanguagesQueryService,
                              FrameworksQueryService frameworksQueryService,
-                             DeliverableContextFacade deliverableContextFacade) {
+                             DeliverableContextFacade deliverableContextFacade,
+                             ProfileContextFacade profileContextFacade) {
         this.projectCommandService = projectCommandService;
-        this.enterpriseContextFacade = enterpriseContextFacade;
         this.projectQueryService = projectQueryService;
-        this.developerContextFacade = developerContextFacade;
         this.programmingLanguagesQueryService = programmingLanguagesQueryService;
         this.frameworksQueryService = frameworksQueryService;
         this.deliverableContextFacade = deliverableContextFacade;
+        this.profileContextFacade = profileContextFacade;
     }
 
     public List<ProgrammingLanguage> getProgrammingLanguages(List<Integer>languages) {
@@ -98,7 +94,7 @@ public class ProjectController {
     @Operation(summary = "Create project")
     @PostMapping
     public ResponseEntity<CreateProjectResource> createProject(@RequestBody CreateProjectResource resource) {
-        var enterprise = this.enterpriseContextFacade.getEnterpriseById(resource.ownerId());
+        var enterprise = this.profileContextFacade.getEnterpriseByUserId(resource.ownerId());
         if (enterprise == null) return ResponseEntity.badRequest().build();
         var programmingLanguages = getProgrammingLanguages(resource.languages());
         var frameworks=getFrameworks(resource.frameworks());
@@ -153,12 +149,12 @@ public class ProjectController {
     @PatchMapping(value = "/{projectId}/add-candidate")
     public ResponseEntity<UpdateProjectCandidatesListResource>
     updateProjectCandidatesList(@PathVariable Long projectId,
-                                @RequestBody Long developerId) {
+                                @RequestBody Long developerUserId) {
         var getProjectByIdQuery = new GetProjectByIdQuery(projectId);
         var project = this.projectQueryService.handle(getProjectByIdQuery);
         if (project.isEmpty()) return ResponseEntity.badRequest().build();
         //get developer by id, usar developer context facade
-        var developer = this.developerContextFacade.getDeveloperById(developerId);
+        var developer = this.profileContextFacade.getDeveloperByUserId(developerUserId);
         if (developer == null) return ResponseEntity.badRequest().build();
         var updateProjectCandidatesListCommand = new UpdateProjectCandidatesListCommand(developer, project.get());
         var updatedProject = this.projectCommandService.handle(updateProjectCandidatesListCommand);
@@ -172,11 +168,11 @@ public class ProjectController {
     @PatchMapping(value = "/{projectId}/assign-developer")
     public ResponseEntity<AssignProjectDeveloperResource>
     setProjectDeveloper(@PathVariable Long projectId,
-                        @RequestBody Long developerId) {
+                        @RequestBody Long developerUserId) {
         var getProjectByIdQuery = new GetProjectByIdQuery(projectId);
         var project = this.projectQueryService.handle(getProjectByIdQuery);
         if (project.isEmpty()) return ResponseEntity.badRequest().build();
-        var developer = this.developerContextFacade.getDeveloperById(developerId);
+        var developer = this.profileContextFacade.getDeveloperByUserId(developerUserId);
         if (developer == null) return ResponseEntity.badRequest().build();
         var assignProjectDeveloperCommand= new AssignProjectDeveloperCommand(project.get(),developer);
         var updatedProject = this.projectCommandService.handle(assignProjectDeveloperCommand);
@@ -187,10 +183,10 @@ public class ProjectController {
     }
 
     @Operation(summary = "Get All Projects By Developer Id")
-    @GetMapping(value = "developer/{developerId}")
-    public ResponseEntity<List<ProjectResource>> getAllProjectsByDeveloperId(@PathVariable Long developerId){
+    @GetMapping(value = "/developer/{developerUserId}")
+    public ResponseEntity<List<ProjectResource>> getAllProjectsByDeveloperId(@PathVariable Long developerUserId){
         //get developer con el facade
-        var developer = this.developerContextFacade.getDeveloperById(developerId);
+        var developer = this.profileContextFacade.getDeveloperByUserId(developerUserId);
         if(developer==null) return ResponseEntity.badRequest().build();
         var getProjectsByDeveloperIdQuery = new GetAllProjectsByDeveloperIdQuery(developer);
         var projects=this.projectQueryService.handle(getProjectsByDeveloperIdQuery);
@@ -199,4 +195,18 @@ public class ProjectController {
                 .collect(Collectors.toList());
         return ResponseEntity.ok(projectsResources);
     }
+
+    @Operation(summary = "Get All Projects By Enterprise Id")
+    @GetMapping(value = "/enterprise/{enterpriseUserId}")
+    public ResponseEntity<List<ProjectResource>> getAllProjectsByEnterpriseId(@PathVariable Long enterpriseUserId){
+        var enterprise = this.profileContextFacade.getEnterpriseByUserId(enterpriseUserId);
+        if(enterprise==null) return ResponseEntity.badRequest().build();
+        var getProjectsByEnterpriseIdQuery = new GetAllProjectsByEnterpriseIdQuery(enterprise);
+        var projects =this.projectQueryService.handle(getProjectsByEnterpriseIdQuery);
+        var projectResources = projects.stream()
+                .map(ProjectResourceFromEntityAssembler::toResourceFromEntity)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(projectResources);
+    }
+
 }
