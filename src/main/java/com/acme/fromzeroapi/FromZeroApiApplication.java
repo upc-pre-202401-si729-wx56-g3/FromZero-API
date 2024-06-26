@@ -52,6 +52,5 @@ public class FromZeroApiApplication {
 			languagesRepository.saveAll(languageList);
 			frameworksRepository.saveAll(frameworksList);
 		};
-	}
-	*/
+	}*/
 }
